@@ -254,7 +254,7 @@ export const registerSellerService = async (
 
 export const sellerProfileService = async (userId: string) => {
 	const seller = await prisma.seller.findUnique({
-		where: { userId, status: SellerStatus.APPROVED },
+		where: { userId },
 		select: {
 			id: true,
 			shopName: true,
@@ -270,6 +270,10 @@ export const sellerProfileService = async (userId: string) => {
 
 	if (!seller) {
 		throw ApiError.notFound("Seller profile not found");
+	}
+
+	if (seller.status !== SellerStatus.APPROVED) {
+		throw ApiError.forbidden("Your seller account is not approved yet");
 	}
 
 	return {

@@ -6,7 +6,7 @@ import type { CreateCategoryType } from "./dto";
 export const getAllCategoryService = async () => {
 	const result = await prisma.category.findMany();
 	return {
-		status: "success",
+		success: true,
 		message: "Categories retrieved successfully",
 		data: result,
 	};
@@ -35,7 +35,7 @@ export const createCategoryService = async (data: CreateCategoryType) => {
 	});
 
 	return {
-		status: "success",
+		success: true,
 		message: "Category created successfully",
 		data: result,
 	};
