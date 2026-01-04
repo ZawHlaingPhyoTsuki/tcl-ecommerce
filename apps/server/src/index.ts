@@ -5,6 +5,7 @@ import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express from "express";
 // ROUTES
+import categoryRouter from "./features/category/router";
 import productRouter from "./features/product/router";
 import sellerRouter from "./features/seller/router";
 // MIDDLEWARES
@@ -29,8 +30,9 @@ app.get("/", (_req, res) => {
 	res.status(200).send("OK");
 });
 
-app.use("/api/", sellerRouter);
+app.use("/api", sellerRouter);
 app.use("/api/products", productRouter);
+app.use("/api/categories", categoryRouter);
 
 app.use(errorHandler);
 

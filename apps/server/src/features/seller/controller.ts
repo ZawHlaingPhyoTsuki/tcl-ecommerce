@@ -1,14 +1,16 @@
 import type { NextFunction, Request, Response } from "express";
-import { ApiError } from "@/utils/api-error";
 import {
+	CreateSellerProductSchema,
 	GetAllSellersQuerySchema,
 	RegisterSellerSchema,
 	SellerIdSchema,
 } from "./dto";
 import {
 	approveSellerRegisterService,
+	createSellerProductsService,
 	deleteSellerService,
 	getAllSellerService,
+	listSellerProductsService,
 	registerSellerService,
 	sellerProfileService,
 } from "./service";
@@ -23,7 +25,14 @@ export const getAllSellerController = async (
 		const parsed = GetAllSellersQuerySchema.safeParse(req.query);
 
 		if (!parsed.success) {
-			throw ApiError.badRequest("Invalid query parameters");
+			return res.status(400).json({
+				success: false,
+				message: "Validation failed",
+				errors: parsed.error.issues.map((err) => ({
+					path: err.path.join("."),
+					message: err.message,
+				})),
+			});
 		}
 
 		const result = await getAllSellerService(parsed.data);
@@ -42,7 +51,14 @@ export const approveSellerRegisterController = async (
 		const parsed = SellerIdSchema.safeParse(req.params);
 
 		if (!parsed.success) {
-			throw ApiError.badRequest("Invalid seller ID");
+			return res.status(400).json({
+				success: false,
+				message: "Validation failed",
+				errors: parsed.error.issues.map((err) => ({
+					path: err.path.join("."),
+					message: err.message,
+				})),
+			});
 		}
 
 		const result = await approveSellerRegisterService(parsed.data.sellerId);
@@ -53,6 +69,52 @@ export const approveSellerRegisterController = async (
 };
 
 // Seller
+export const listSellerProductsController = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const result = await listSellerProductsService(req.user.id);
+		return res.status(200).json(result);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const createSellerProductsController = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const files = req.files as Express.Multer.File[] | undefined;
+
+		const parsed = CreateSellerProductSchema.safeParse(req.body);
+
+		if (!parsed.success) {
+			return res.status(400).json({
+				success: false,
+				message: "Validation failed",
+				errors: parsed.error.issues.map((err) => ({
+					path: err.path.join("."),
+					message: err.message,
+				})),
+			});
+		}
+
+		const result = await createSellerProductsService(
+			parsed.data,
+			req.user.id,
+			files,
+		);
+
+		return res.status(201).json(result);
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const registerSellerController = async (
 	req: Request,
 	res: Response,
@@ -62,7 +124,14 @@ export const registerSellerController = async (
 		const parsed = RegisterSellerSchema.safeParse(req.body);
 
 		if (!parsed.success) {
-			throw parsed.error;
+			return res.status(400).json({
+				success: false,
+				message: "Validation failed",
+				errors: parsed.error.issues.map((err) => ({
+					path: err.path.join("."),
+					message: err.message,
+				})),
+			});
 		}
 
 		const result = await registerSellerService(parsed.data, req.user.id);

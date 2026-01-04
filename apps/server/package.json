@@ -19,15 +19,17 @@
 		"cors": "^2.8.5",
 		"dotenv": "catalog:",
 		"express": "^5.1.0",
+		"multer": "^2.0.2",
 		"slugify": "^1.6.6",
 		"zod": "catalog:"
 	},
 	"devDependencies": {
-		"@types/express": "^5.0.1",
-		"@types/cors": "^2.8.17",
+		"@tcl-ecommerce/config": "workspace:*",
 		"@types/bun": "catalog:",
-		"typescript": "catalog:",
+		"@types/cors": "^2.8.17",
+		"@types/express": "^5.0.1",
+		"@types/multer": "^2.0.0",
 		"tsdown": "^0.16.5",
-		"@tcl-ecommerce/config": "workspace:*"
+		"typescript": "catalog:"
 	}
 }

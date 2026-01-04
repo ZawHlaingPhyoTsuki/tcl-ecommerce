@@ -1,10 +1,13 @@
 import { Role } from "@tcl-ecommerce/db";
 import { Router } from "express";
 import { requireAuth, requireRoles } from "@/middlewares";
+import { uploadProductImages } from "@/middlewares/upload";
 import {
 	approveSellerRegisterController,
+	createSellerProductsController,
 	deleteSellerController,
 	getAllSellerController,
+	listSellerProductsController,
 	registerSellerController,
 	sellerProfileController,
 } from "./controller";
@@ -26,15 +29,37 @@ router.post(
 );
 
 // Seller
-router.post(
-	"/seller/register",
+// List Products (for seller)
+router.get(
+	"/sellers/products",
 	requireAuth,
-	requireRoles([Role.CUSTOMER]),
-	registerSellerController,
+	requireRoles([Role.SELLER]),
+	listSellerProductsController,
 );
-router.get("/seller/profile", requireAuth, sellerProfileController);
+
+// Register as seller (for customer)
+router.post("/sellers/register", requireAuth, registerSellerController);
+
+// Create Product (for seller)
+router.post(
+	"/sellers/products",
+	requireAuth,
+	requireRoles([Role.SELLER]),
+	uploadProductImages.array("images", 5),
+	createSellerProductsController,
+);
+
+// Seller Profile (for seller)
+router.get(
+	"/sellers/profile",
+	requireAuth,
+	requireRoles([Role.SELLER]),
+	sellerProfileController,
+);
+
+// Delete Seller (for seller)
 router.delete(
-	"/seller",
+	"/sellers",
 	requireAuth,
 	requireRoles([Role.SELLER]),
 	deleteSellerController,

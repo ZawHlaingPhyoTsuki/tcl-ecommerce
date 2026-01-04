@@ -18,6 +18,34 @@ export type SellerIdType = z.infer<typeof SellerIdSchema>;
 export type GetAllSellersQueryType = z.infer<typeof GetAllSellersQuerySchema>;
 
 // Seller
+export const CreateSellerProductSchema = z.object({
+	name: z
+		.string()
+		.min(3, "Name must be at least 3 characters")
+		.max(100, "Name too long"),
+	slug: z
+		.string()
+		.regex(/^[a-z0-9-]+$/)
+		.min(3, "Slug must be at least 3 characters")
+		.max(100, "Slug too long")
+		.optional(),
+	description: z.string().min(10, "Description must be at least 10 characters"),
+	price: z.coerce
+		.number()
+		.int({ error: "Price must be an integer" })
+		.min(0, "Price must be at least 0")
+		.max(1000000, "Price too high"),
+	currency: z
+		.enum(["BAHT", "KYAT"], { error: "Currency must be BAHT or KYAT" })
+		.default("BAHT"),
+	stock: z.coerce
+		.number()
+		.int({ error: "Stock must be an integer" })
+		.min(0, "Stock must be at least 0")
+		.max(1000000, "Stock too high"),
+	categoryId: z.uuidv4({ error: "Invalid category ID format" }),
+});
+
 export const RegisterSellerSchema = z.object({
 	shopName: z
 		.string()
@@ -38,5 +66,6 @@ export const RegisterSellerSchema = z.object({
 });
 
 export type RegisterSellerType = z.infer<typeof RegisterSellerSchema>;
+export type CreateSellerProductType = z.infer<typeof CreateSellerProductSchema>;
 
 // Customer

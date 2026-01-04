@@ -1,7 +1,15 @@
 import prisma, { type Prisma, Role, SellerStatus } from "@tcl-ecommerce/db";
 import { ApiError } from "@/utils/api-error";
-import { generateUniqueSlug } from "@/utils/generate-unique-slug";
-import type { GetAllSellersQueryType, RegisterSellerType } from "./dto";
+import { uploadToCloudinary } from "@/utils/cloudinary";
+import {
+	generateProductUniqueSlug,
+	generateSellerUniqueSlug,
+} from "@/utils/generate-unique-slug";
+import type {
+	CreateSellerProductType,
+	GetAllSellersQueryType,
+	RegisterSellerType,
+} from "./dto";
 
 // Admin
 export const getAllSellerService = async (query: GetAllSellersQueryType) => {
@@ -103,6 +111,92 @@ export const approveSellerRegisterService = async (sellerId: string) => {
 };
 
 // Seller
+export const listSellerProductsService = async (userId: string) => {
+	const seller = await prisma.seller.findUnique({
+		where: { userId },
+	});
+
+	if (!seller) {
+		throw ApiError.notFound("Seller not found");
+	}
+
+	const products = await prisma.product.findMany({
+		where: { sellerId: seller.id },
+	});
+
+	return {
+		success: true,
+		message: "Seller products retrieved successfully",
+		data: products,
+	};
+};
+
+export const createSellerProductsService = async (
+	data: CreateSellerProductType,
+	userId: string,
+	files?: Express.Multer.File[],
+) => {
+	const seller = await prisma.seller.findUnique({
+		where: { userId },
+		select: { id: true, status: true },
+	});
+
+	if (!seller) {
+		throw ApiError.notFound("Seller profile not found");
+	}
+
+	if (seller.status !== SellerStatus.APPROVED) {
+		throw ApiError.forbidden("Your seller account is not approved yet");
+	}
+
+	const baseSlug = data.slug || data.name;
+	const uniqueSlug = await generateProductUniqueSlug(baseSlug, prisma.product);
+
+	const product = await prisma.$transaction(async (tx) => {
+		const newProduct = await tx.product.create({
+			data: {
+				name: data.name,
+				slug: uniqueSlug,
+				description: data.description,
+				price: data.price,
+				stock: data.stock,
+				currency: data.currency,
+				categoryId: data.categoryId,
+				sellerId: seller.id,
+			},
+		});
+
+		if (files && files.length > 0) {
+			const folder = `tachileik-shop/products/${newProduct.id}`;
+
+			const uploadPromises = files.map((file) =>
+				uploadToCloudinary(file.buffer, { folder }),
+			);
+
+			const uploadResults = await Promise.all(uploadPromises);
+
+			await tx.image.createMany({
+				data: uploadResults.map((result) => ({
+					url: result.url,
+					publicId: result.publicId,
+					productId: newProduct.id,
+				})),
+			});
+		}
+
+		return tx.product.findUnique({
+			where: { id: newProduct.id },
+			include: { images: true },
+		});
+	});
+
+	return {
+		success: true,
+		message: "Product created successfully",
+		data: product,
+	};
+};
+
 export const registerSellerService = async (
 	data: RegisterSellerType,
 	userId: string,
@@ -118,9 +212,27 @@ export const registerSellerService = async (
 		throw ApiError.conflict("You are already registered as a seller");
 	}
 
+	// Check if shop name is already taken
+	const existingShopName = await prisma.seller.findUnique({
+		where: { shopName },
+	});
+
+	if (existingShopName) {
+		throw ApiError.conflict("Shop name is already taken");
+	}
+
+	// Check if slug is already taken
+	const existingSlug = await prisma.seller.findUnique({
+		where: { slug },
+	});
+
+	if (existingSlug) {
+		throw ApiError.conflict("Slug is already taken");
+	}
+
 	// Generate unique slug
 	const baseSlug = slug || shopName;
-	const uniqueSlug = await generateUniqueSlug(baseSlug, prisma.seller);
+	const uniqueSlug = await generateSellerUniqueSlug(baseSlug, prisma.seller);
 
 	// Create seller in a transaction
 	const seller = await prisma.seller.create({
@@ -146,7 +258,7 @@ export const registerSellerService = async (
 
 export const sellerProfileService = async (userId: string) => {
 	const seller = await prisma.seller.findUnique({
-		where: { userId },
+		where: { userId, status: SellerStatus.APPROVED },
 		select: {
 			id: true,
 			shopName: true,
