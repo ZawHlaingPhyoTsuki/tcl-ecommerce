@@ -8,7 +8,10 @@ export const CreateCategorySchema = z.object({
 	slug: z
 		.string()
 		.toLowerCase()
-		.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug")
+		.regex(
+			/^[a-z0-9-]+$/,
+			"Slug can only contain lowercase letters, numbers, and hyphens",
+		)
 		.min(3, "Slug must be at least 3 characters")
 		.max(100, "Slug too long")
 		.optional(),

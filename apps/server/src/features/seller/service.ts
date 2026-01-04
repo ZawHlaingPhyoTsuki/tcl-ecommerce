@@ -87,11 +87,6 @@ export const approveSellerRegisterService = async (sellerId: string) => {
 		throw ApiError.badRequest("Seller is already approved");
 	}
 
-	// await prisma.seller.update({
-	// 	where: { id: sellerId },
-	// 	data: { status: SellerStatus.APPROVED },
-	// });
-
 	await prisma.$transaction(async (tx) => {
 		await tx.seller.update({
 			where: { id: sellerId },
@@ -152,6 +147,16 @@ export const createSellerProductsService = async (
 	const baseSlug = data.slug || data.name;
 	const uniqueSlug = await generateProductUniqueSlug(baseSlug, prisma.product);
 
+	// Upload images before transaction
+	let uploadResults: { url: string; publicId: string }[] = [];
+	if (files && files.length > 0) {
+		const folder = `tachileik-shop/products/${seller.id}`;
+		const uploadPromises = files.map((file) =>
+			uploadToCloudinary(file.buffer, { folder }),
+		);
+		uploadResults = await Promise.all(uploadPromises);
+	}
+
 	const product = await prisma.$transaction(async (tx) => {
 		const newProduct = await tx.product.create({
 			data: {
@@ -166,15 +171,7 @@ export const createSellerProductsService = async (
 			},
 		});
 
-		if (files && files.length > 0) {
-			const folder = `tachileik-shop/products/${newProduct.id}`;
-
-			const uploadPromises = files.map((file) =>
-				uploadToCloudinary(file.buffer, { folder }),
-			);
-
-			const uploadResults = await Promise.all(uploadPromises);
-
+		if (uploadResults.length > 0) {
 			await tx.image.createMany({
 				data: uploadResults.map((result) => ({
 					url: result.url,
@@ -221,24 +218,23 @@ export const registerSellerService = async (
 		throw ApiError.conflict("Shop name is already taken");
 	}
 
-	// Check if slug is already taken
-	const existingSlug = await prisma.seller.findUnique({
-		where: { slug },
-	});
-
-	if (existingSlug) {
-		throw ApiError.conflict("Slug is already taken");
+	// Check if slug is already taken (only if provided)
+	if (slug) {
+		const existingSlug = await prisma.seller.findUnique({
+			where: { slug },
+		});
+		if (existingSlug) {
+			throw ApiError.conflict("Slug is already taken");
+		}
 	}
-
-	// Generate unique slug
-	const baseSlug = slug || shopName;
-	const uniqueSlug = await generateSellerUniqueSlug(baseSlug, prisma.seller);
 
 	// Create seller in a transaction
 	const seller = await prisma.seller.create({
 		data: {
 			shopName,
-			slug: uniqueSlug,
+			slug: slug
+				? slug
+				: await generateSellerUniqueSlug(shopName, prisma.seller),
 			bio: bio || null,
 			phone: phone || null,
 			address: address || null,

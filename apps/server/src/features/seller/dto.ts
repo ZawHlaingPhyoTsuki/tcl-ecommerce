@@ -25,7 +25,11 @@ export const CreateSellerProductSchema = z.object({
 		.max(100, "Name too long"),
 	slug: z
 		.string()
-		.regex(/^[a-z0-9-]+$/)
+		.toLowerCase()
+		.regex(
+			/^[a-z0-9-]+$/,
+			"Slug can only contain lowercase letters, numbers, and hyphens",
+		)
 		.min(3, "Slug must be at least 3 characters")
 		.max(100, "Slug too long")
 		.optional(),
@@ -53,6 +57,7 @@ export const RegisterSellerSchema = z.object({
 		.max(100, "Shop name too long"),
 	slug: z
 		.string()
+		.toLowerCase()
 		.regex(
 			/^[a-z0-9-]+$/,
 			"Slug can only contain lowercase letters, numbers, and hyphens",

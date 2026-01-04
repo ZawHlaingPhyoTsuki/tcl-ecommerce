@@ -7,7 +7,7 @@ export const uploadProductImages = multer({
 	storage,
 	limits: {
 		fileSize: 5 * 1024 * 1024, // 5MB per file
-		files: 10, // max 10 images
+		files: 5, // max 5 images
 	},
 	fileFilter: (_req, file, callback) => {
 		const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];

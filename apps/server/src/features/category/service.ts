@@ -29,7 +29,7 @@ export const createCategoryService = async (data: CreateCategoryType) => {
 		data: {
 			name,
 			slug: slug
-				? slug.toLowerCase()
+				? slug
 				: await generateCategoryUniqueSlug(name, prisma.category),
 		},
 	});
