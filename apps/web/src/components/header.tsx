@@ -29,7 +29,7 @@ export default function Header() {
 			<hr />
 			<div className="flex flex-row items-center justify-between px-2 py-1">
 				<div>Logo</div>
-				<div>Search bar</div>
+				<div> Search bar (User Infomation)</div>
 				<div>Cart</div>
 			</div>
 			<hr />

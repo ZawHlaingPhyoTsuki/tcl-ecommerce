@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 export default function Home() {
@@ -80,12 +81,13 @@ export default function Home() {
 						className="scrollbar-hide flex max-h-80 flex-col flex-wrap gap-3 overflow-x-hidden"
 					>
 						{items.map((_, index) => (
-							<div
+							<Link
 								key={index}
+								href="/products"
 								className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg bg-muted font-medium text-white"
 							>
 								Category {index + 1}
-							</div>
+							</Link>
 						))}
 					</div>
 

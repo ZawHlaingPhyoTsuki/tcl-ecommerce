@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Nunito_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import "../index.css";
 import { getLocale, getMessages } from "next-intl/server";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
+
+const nunitoSans = Nunito_Sans({ variable: "--font-sans" });
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -33,7 +35,7 @@ export default async function RootLayout({
 	const messages = await getMessages();
 
 	return (
-		<html lang={locale} suppressHydrationWarning>
+		<html lang={locale} suppressHydrationWarning className={nunitoSans.className}>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
