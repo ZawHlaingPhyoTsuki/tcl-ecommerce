@@ -34,6 +34,7 @@ export const requireRoles = (roles: string[]) => {
 			return res.status(403).json({ success: false, message: "Forbidden" });
 		}
 
+		// Additional validation for SELLER role
 		if (req.user.role === "SELLER") {
 			try {
 				const seller = await prisma.seller.findUnique({
@@ -51,16 +52,9 @@ export const requireRoles = (roles: string[]) => {
 				if (seller.status !== SellerStatus.APPROVED) {
 					return res.status(403).json({
 						success: false,
-						message:
-							seller.status === SellerStatus.PENDING
-								? "Your seller account is still pending approval"
-								: seller.status === SellerStatus.REJECTED
-									? "Your seller account has been rejected"
-									: "Your seller account is not approved",
+						message: getSellerStatusMessage(seller.status),
 					});
 				}
-
-				next();
 			} catch (error) {
 				console.error("Seller validation error:", error);
 				return res
@@ -72,3 +66,14 @@ export const requireRoles = (roles: string[]) => {
 		next();
 	};
 };
+
+function getSellerStatusMessage(status: SellerStatus): string {
+	switch (status) {
+		case SellerStatus.PENDING:
+			return "Your seller account is still pending approval";
+		case SellerStatus.REJECTED:
+			return "Your seller account has been rejected";
+		default:
+			return "Your seller account is not approved";
+	}
+}
