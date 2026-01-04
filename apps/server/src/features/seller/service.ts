@@ -1,6 +1,12 @@
-import prisma, { type Prisma, Role, SellerStatus } from "@tcl-ecommerce/db";
+import prisma, {
+	type Image,
+	type Prisma,
+	type Product,
+	Role,
+	SellerStatus,
+} from "@tcl-ecommerce/db";
 import { ApiError } from "@/utils/api-error";
-import { uploadToCloudinary } from "@/utils/cloudinary";
+import { deleteFromCloudinary, uploadToCloudinary } from "@/utils/cloudinary";
 import {
 	generateProductUniqueSlug,
 	generateSellerUniqueSlug,
@@ -157,35 +163,47 @@ export const createSellerProductsService = async (
 		uploadResults = await Promise.all(uploadPromises);
 	}
 
-	const product = await prisma.$transaction(async (tx) => {
-		const newProduct = await tx.product.create({
-			data: {
-				name: data.name,
-				slug: uniqueSlug,
-				description: data.description,
-				price: data.price,
-				stock: data.stock,
-				currency: data.currency,
-				categoryId: data.categoryId,
-				sellerId: seller.id,
-			},
-		});
+	let product: (Product & { images: Image[] }) | null;
 
-		if (uploadResults.length > 0) {
-			await tx.image.createMany({
-				data: uploadResults.map((result) => ({
-					url: result.url,
-					publicId: result.publicId,
-					productId: newProduct.id,
-				})),
+	try {
+		product = await prisma.$transaction(async (tx) => {
+			const newProduct = await tx.product.create({
+				data: {
+					name: data.name,
+					slug: uniqueSlug,
+					description: data.description,
+					price: data.price,
+					stock: data.stock,
+					currency: data.currency,
+					categoryId: data.categoryId,
+					sellerId: seller.id,
+				},
 			});
-		}
 
-		return tx.product.findUnique({
-			where: { id: newProduct.id },
-			include: { images: true },
+			if (uploadResults.length > 0) {
+				await tx.image.createMany({
+					data: uploadResults.map((result) => ({
+						url: result.url,
+						publicId: result.publicId,
+						productId: newProduct.id,
+					})),
+				});
+			}
+
+			return tx.product.findUnique({
+				where: { id: newProduct.id },
+				include: { images: true },
+			});
 		});
-	});
+	} catch (error) {
+		// Cleanup uploaded images on transaction failure
+		if (uploadResults.length > 0) {
+			await Promise.allSettled(
+				uploadResults.map((r) => deleteFromCloudinary(r.publicId)),
+			);
+		}
+		throw error;
+	}
 
 	return {
 		success: true,
