@@ -1,5 +1,6 @@
-import prisma from "@tcl-ecommerce/db";
+import prisma, { type Category } from "@tcl-ecommerce/db";
 import { ApiError } from "@/utils/api-error";
+import { deleteFromCloudinary, uploadToCloudinary } from "@/utils/cloudinary";
 import { generateCategoryUniqueSlug } from "@/utils/generate-unique-slug";
 import type { CreateCategoryType } from "./dto";
 
@@ -12,7 +13,10 @@ export const getAllCategoryService = async () => {
 	};
 };
 
-export const createCategoryService = async (data: CreateCategoryType) => {
+export const createCategoryService = async (
+	data: CreateCategoryType,
+	file?: Express.Multer.File,
+) => {
 	const { name, slug } = data;
 
 	// If client provided slug, check if it is unique
@@ -25,14 +29,32 @@ export const createCategoryService = async (data: CreateCategoryType) => {
 		}
 	}
 
-	const result = await prisma.category.create({
-		data: {
-			name,
-			slug: slug
-				? slug
-				: await generateCategoryUniqueSlug(name, prisma.category),
-		},
-	});
+	// Upload single image
+	let uploadResult: { url: string; publicId: string } | null = null;
+	if (file) {
+		const folder = "tachileik-shop/category";
+		uploadResult = await uploadToCloudinary(file.buffer, { folder });
+	}
+
+	let result: Category;
+	try {
+		result = await prisma.category.create({
+			data: {
+				name,
+				slug: slug
+					? slug
+					: await generateCategoryUniqueSlug(name, prisma.category),
+				imageUrl: uploadResult?.url || null,
+				imagePublicId: uploadResult?.publicId || null,
+			},
+		});
+	} catch (error) {
+		// Cleanup uploaded image if creation fails
+		if (uploadResult?.publicId) {
+			await deleteFromCloudinary(uploadResult.publicId);
+		}
+		throw error;
+	}
 
 	return {
 		success: true,

@@ -21,6 +21,8 @@ export const createCategoryController = async (
 	next: NextFunction,
 ) => {
 	try {
+		const file = req.file as Express.Multer.File | undefined;
+
 		const parsed = CreateCategorySchema.safeParse(req.body);
 
 		if (!parsed.success) {
@@ -34,7 +36,7 @@ export const createCategoryController = async (
 			});
 		}
 
-		const result = await createCategoryService(parsed.data);
+		const result = await createCategoryService(parsed.data, file);
 		return res.status(201).json(result);
 	} catch (error) {
 		next(error);

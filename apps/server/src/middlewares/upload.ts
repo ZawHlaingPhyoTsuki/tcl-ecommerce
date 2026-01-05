@@ -20,3 +20,18 @@ export const uploadProductImages = multer({
 		}
 	},
 });
+
+export const uploadCategoryImage = multer({
+	storage,
+	limits: {
+		fileSize: 2 * 1024 * 1024, // 2MB for category image (smaller than products)
+	},
+	fileFilter: (_req, file, callback: FileFilterCallback) => {
+		const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+		if (allowedTypes.includes(file.mimetype)) {
+			callback(null, true);
+		} else {
+			callback(new Error("Only JPEG, PNG, and WebP images are allowed"));
+		}
+	},
+});

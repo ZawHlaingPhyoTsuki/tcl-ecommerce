@@ -194,7 +194,7 @@ export const createSellerProductsService = async (
 		// Cleanup uploaded images on transaction failure
 		if (uploadResults.length > 0) {
 			await Promise.allSettled(
-				uploadResults.map((r) => deleteFromCloudinary(r.publicId)),
+				uploadResults.map((result) => deleteFromCloudinary(result.publicId)),
 			);
 		}
 		throw error;
