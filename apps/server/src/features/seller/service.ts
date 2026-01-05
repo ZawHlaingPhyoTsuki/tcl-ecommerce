@@ -11,6 +11,7 @@ import {
 	generateProductUniqueSlug,
 	generateSellerUniqueSlug,
 } from "@/utils/generate-unique-slug";
+import { paginationMetadata } from "@/utils/pagination-metadata";
 import type {
 	CreateSellerProductType,
 	GetAllSellersQueryType,
@@ -61,21 +62,15 @@ export const getAllSellerService = async (query: GetAllSellersQueryType) => {
 		prisma.seller.count({ where }),
 	]);
 
-	const totalPages = Math.ceil(total / limit);
+	// Calculate pagination metadata
+	const pagination = paginationMetadata(page, limit, total);
 
 	return {
 		success: true,
 		message: "Sellers retrieved successfully",
 		data: {
 			sellers,
-			pagination: {
-				page,
-				limit,
-				total,
-				totalPages,
-				hasNext: page < totalPages,
-				hasPrev: page > 1,
-			},
+			pagination,
 		},
 	};
 };

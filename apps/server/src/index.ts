@@ -8,6 +8,7 @@ import express from "express";
 import categoryRouter from "./features/category/router";
 import productRouter from "./features/product/router";
 import sellerRouter from "./features/seller/router";
+import userRouter from "./features/user/router";
 // MIDDLEWARES
 import { errorHandler } from "./middlewares";
 
@@ -31,6 +32,7 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api", sellerRouter);
+app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
 

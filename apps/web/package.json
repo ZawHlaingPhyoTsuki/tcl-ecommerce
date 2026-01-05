@@ -8,7 +8,7 @@
 		"start": "bun run --bun next start"
 	},
 	"dependencies": {
-		"@base-ui/react": "^1.0.0",
+		"radix-ui": "^1.4.3",
 		"@prisma/client": "catalog:",
 		"@tanstack/react-form": "^1.27.3",
 		"@tanstack/react-query": "catalog:",

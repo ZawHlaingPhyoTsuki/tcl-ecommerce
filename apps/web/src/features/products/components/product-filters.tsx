@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
@@ -100,17 +101,26 @@ export function ProductFilters() {
 				<Label className="mb-2 block">Sort By</Label>
 				<Select
 					value={filters.sortBy}
-					onValueChange={(value: any) => updateFilters({ sortBy: value })}
+					onValueChange={(
+						value:
+							| "price-asc"
+							| "price-desc"
+							| "name-asc"
+							| "name-desc"
+							| "newest",
+					) => updateFilters({ sortBy: value })}
 				>
 					<SelectTrigger>
 						<SelectValue placeholder="Sort by" />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="newest">Newest First</SelectItem>
-						<SelectItem value="price-asc">Price: Low to High</SelectItem>
-						<SelectItem value="price-desc">Price: High to Low</SelectItem>
-						<SelectItem value="name-asc">Name: A to Z</SelectItem>
-						<SelectItem value="name-desc">Name: Z to A</SelectItem>
+						<SelectGroup>
+							<SelectItem value="newest">Newest First</SelectItem>
+							<SelectItem value="price-asc">Price: Low to High</SelectItem>
+							<SelectItem value="price-desc">Price: High to Low</SelectItem>
+							<SelectItem value="name-asc">Name: A to Z</SelectItem>
+							<SelectItem value="name-desc">Name: Z to A</SelectItem>
+						</SelectGroup>
 					</SelectContent>
 				</Select>
 			</div>
