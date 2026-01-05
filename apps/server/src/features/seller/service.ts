@@ -5,12 +5,16 @@ import prisma, {
 	Role,
 	SellerStatus,
 } from "@tcl-ecommerce/db";
-import { ApiError } from "@/utils/api-error";
-import { deleteFromCloudinary, uploadToCloudinary } from "@/utils/cloudinary";
+import { ApiError } from "@/common/utils/api-error";
+import {
+	deleteFromCloudinary,
+	uploadToCloudinary,
+} from "@/common/utils/cloudinary";
 import {
 	generateProductUniqueSlug,
 	generateSellerUniqueSlug,
-} from "@/utils/generate-unique-slug";
+} from "@/common/utils/generate-unique-slug";
+import { paginationMetadata } from "@/common/utils/pagination-metadata";
 import type {
 	CreateSellerProductType,
 	GetAllSellersQueryType,
@@ -61,21 +65,15 @@ export const getAllSellerService = async (query: GetAllSellersQueryType) => {
 		prisma.seller.count({ where }),
 	]);
 
-	const totalPages = Math.ceil(total / limit);
+	// Calculate pagination metadata
+	const pagination = paginationMetadata(page, limit, total);
 
 	return {
 		success: true,
 		message: "Sellers retrieved successfully",
 		data: {
 			sellers,
-			pagination: {
-				page,
-				limit,
-				total,
-				totalPages,
-				hasNext: page < totalPages,
-				hasPrev: page > 1,
-			},
+			pagination,
 		},
 	};
 };
@@ -199,7 +197,7 @@ export const createSellerProductsService = async (
 		// Cleanup uploaded images on transaction failure
 		if (uploadResults.length > 0) {
 			await Promise.allSettled(
-				uploadResults.map((r) => deleteFromCloudinary(r.publicId)),
+				uploadResults.map((result) => deleteFromCloudinary(result.publicId)),
 			);
 		}
 		throw error;

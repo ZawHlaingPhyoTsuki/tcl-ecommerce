@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 
-import { ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
 
 export default function Header() {
@@ -23,9 +22,15 @@ export default function Header() {
 					})}
 				</nav>
 				<div className="flex items-center gap-2">
-					<ModeToggle />
+					<span>Translation</span>
 					<UserMenu />
 				</div>
+			</div>
+			<hr />
+			<div className="flex flex-row items-center justify-between px-2 py-1">
+				<div>Logo</div>
+				<div> Search bar (User Infomation)</div>
+				<div>Cart</div>
 			</div>
 			<hr />
 		</div>

@@ -1,0 +1,18 @@
+model Favorite {
+  id        String   @id @default(uuid())
+  
+  // User who favorited the product
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Product being favorited
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // One user can only favorite a product once
+  @@unique([userId, productId])
+  @@map("favorite")
+}

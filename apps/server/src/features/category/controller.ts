@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { formatZodError } from "@/common/utils/zod-error";
 import { CreateCategorySchema } from "./dto";
 import { createCategoryService, getAllCategoryService } from "./service";
 
@@ -21,20 +22,19 @@ export const createCategoryController = async (
 	next: NextFunction,
 ) => {
 	try {
+		const file = req.file as Express.Multer.File | undefined;
+
 		const parsed = CreateCategorySchema.safeParse(req.body);
 
 		if (!parsed.success) {
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsed.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsed.error),
 			});
 		}
 
-		const result = await createCategoryService(parsed.data);
+		const result = await createCategoryService(parsed.data, file);
 		return res.status(201).json(result);
 	} catch (error) {
 		next(error);

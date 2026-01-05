@@ -1,37 +1,26 @@
-"use client";
+import { getCategories } from "@/features/home/api/category";
+import BestSellingStoreSection from "@/features/home/components/best-selling-store-section";
+import CategorySection from "@/features/home/components/category-section";
+import HeroSection from "@/features/home/components/hero-section";
+import SellerSection from "@/features/home/components/seller-section";
 
-import { useTranslations } from "next-intl";
-import LocaleSwitcher from "@/components/local-switcher";
+export default async function Home() {
+	const categories = await getCategories();
 
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
-
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
-
-export default function Home() {
-	const t = useTranslations("HomePage");
+	if (!categories.success) {
+		console.error("Failed to fetch categories:", categories.message);
+		return <div>Failed to load categories</div>;
+	}
 
 	return (
-		<div className="container mx-auto max-w-3xl px-4 py-2">
-			<LocaleSwitcher />
-			<pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-			<div className="grid gap-6">
-				<section className="rounded-lg border p-4">
-					<h2 className="mb-2 font-medium">API Status</h2>
-					<h1>{t("title")}</h1>
-				</section>
-			</div>
+		<div className="container mx-auto max-w-7xl px-4 py-2">
+			<HeroSection />
+
+			<CategorySection categories={categories.success ? categories.data : []} />
+
+			<SellerSection />
+
+			<BestSellingStoreSection />
 		</div>
 	);
 }

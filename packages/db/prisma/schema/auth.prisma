@@ -10,10 +10,11 @@ model User {
   accounts      Account[]
 
   // app fields
-  imagePublicId  String?
-  role           Role    @default(CUSTOMER)
-  seller         Seller?
-  buyerOrders    Order[]  @relation("BuyerOrders")
+  imagePublicId String?
+  role          Role       @default(CUSTOMER)
+  seller        Seller?
+  favorites     Favorite[]
+  reviews       Review[]
 
   @@unique([email])
   @@map("user")

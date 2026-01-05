@@ -1,9 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
+import { SellerIdSchema } from "@/common/dto";
+import { formatZodError } from "@/common/utils/zod-error";
 import {
 	CreateSellerProductSchema,
 	GetAllSellersQuerySchema,
 	RegisterSellerSchema,
-	SellerIdSchema,
 } from "./dto";
 import {
 	approveSellerRegisterService,
@@ -28,10 +29,7 @@ export const getAllSellerController = async (
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsed.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsed.error),
 			});
 		}
 
@@ -54,10 +52,7 @@ export const approveSellerRegisterController = async (
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsed.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsed.error),
 			});
 		}
 
@@ -96,10 +91,7 @@ export const createSellerProductsController = async (
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsed.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsed.error),
 			});
 		}
 
@@ -127,10 +119,7 @@ export const registerSellerController = async (
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsed.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsed.error),
 			});
 		}
 

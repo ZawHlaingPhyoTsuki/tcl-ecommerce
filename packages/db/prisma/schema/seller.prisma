@@ -8,7 +8,6 @@ model Seller {
     status   SellerStatus @default(PENDING)
 
     products  Product[]
-    subOrders SubOrder[]
     user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String     @unique
 

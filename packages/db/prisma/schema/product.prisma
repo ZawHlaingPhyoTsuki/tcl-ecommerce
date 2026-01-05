@@ -8,11 +8,12 @@ model Product {
     stock       Int
     images      Image[]
 
-    category   Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+    category   Category   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
     categoryId String
-    seller     Seller      @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+    seller     Seller     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
     sellerId   String
-    orderItems OrderItem[]
+    favorites  Favorite[]
+    reviews    Review[]
 
     archivedAt DateTime?
 
