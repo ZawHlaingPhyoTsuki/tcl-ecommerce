@@ -29,6 +29,11 @@ export default function SellerSection() {
 		setSellerScrollPosition(newPosition);
 	};
 
+	const maxScroll = sellerContainerRef.current
+		? sellerContainerRef.current.scrollWidth -
+			sellerContainerRef.current.clientWidth
+		: 0;
+
 	const items = Array.from({ length: 30 });
 
 	return (
@@ -41,7 +46,7 @@ export default function SellerSection() {
 					type="button"
 					onClick={() => scrollSellers("left")}
 					disabled={sellerScrollPosition <= 0}
-					className="absolute top-1/2 left-0 z-10 -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-30"
+					className="absolute top-1/2 left-0 z-10 -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-0"
 				>
 					<ChevronLeft className="h-5 w-5" />
 				</button>
@@ -65,7 +70,8 @@ export default function SellerSection() {
 				<button
 					type="button"
 					onClick={() => scrollSellers("right")}
-					className="absolute top-1/2 right-0 z-10 translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg"
+					disabled={sellerScrollPosition >= maxScroll}
+					className="absolute top-1/2 right-0 z-10 translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-0"
 				>
 					<ChevronRight className="h-5 w-5" />
 				</button>

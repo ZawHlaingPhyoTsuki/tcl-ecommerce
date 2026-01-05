@@ -39,6 +39,11 @@ export default function CategorySection({ categories }: CategorySectionProps) {
 		setCategoryScrollPosition(newPosition);
 	};
 
+	const maxScroll = categoryContainerRef.current
+		? categoryContainerRef.current.scrollWidth -
+			categoryContainerRef.current.clientWidth
+		: 0;
+
 	return (
 		<div className="mt-4">
 			<h2 className="mb-3 font-semibold text-xl">Categories</h2>
@@ -49,7 +54,7 @@ export default function CategorySection({ categories }: CategorySectionProps) {
 					type="button"
 					onClick={() => scrollCategories("left")}
 					disabled={categoryScrollPosition <= 0}
-					className="absolute top-1/2 left-0 z-10 -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-30"
+					className="absolute top-1/2 left-0 z-10 -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-0"
 				>
 					<ChevronLeft className="h-5 w-5" />
 				</button>
@@ -110,7 +115,8 @@ export default function CategorySection({ categories }: CategorySectionProps) {
 				<button
 					type="button"
 					onClick={() => scrollCategories("right")}
-					className="absolute top-1/2 right-0 z-10 translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg"
+					disabled={categoryScrollPosition >= maxScroll}
+					className="absolute top-1/2 right-0 z-10 translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-0"
 				>
 					<ChevronRight className="h-5 w-5" />
 				</button>

@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { GetAllProductsQuerySchema, ProductIdSchema } from "./dto";
+import { ProductIdSchema } from "@/common/dto";
+import { GetAllProductsQuerySchema } from "./dto";
 import { favoriteProductService, getAllProductsService } from "./service";
 
 export const getAllProductsController = async (

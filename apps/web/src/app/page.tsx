@@ -7,13 +7,16 @@ import SellerSection from "@/features/home/components/seller-section";
 export default async function Home() {
 	const categories = await getCategories();
 
-	console.log({ categories });
+	if (!categories.success) {
+		console.error("Failed to fetch categories:", categories.message);
+		return <div>Failed to load categories</div>;
+	}
 
 	return (
 		<div className="container mx-auto max-w-7xl px-4 py-2">
 			<HeroSection />
 
-			<CategorySection categories={categories.data} />
+			<CategorySection categories={categories.success ? categories.data : []} />
 
 			<SellerSection />
 

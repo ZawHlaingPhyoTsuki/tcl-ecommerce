@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
+import { SellerIdSchema } from "@/common/dto";
 import {
 	CreateSellerProductSchema,
 	GetAllSellersQuerySchema,
 	RegisterSellerSchema,
-	SellerIdSchema,
 } from "./dto";
 import {
 	approveSellerRegisterService,

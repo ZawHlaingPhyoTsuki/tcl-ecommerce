@@ -8,6 +8,6 @@ import {
 const router: Router = Router();
 
 router.get("/", getAllProductsController);
-router.post("/:id/favorite", requireAuth, favoriteProductController);
+router.post("/:productId/favorite", requireAuth, favoriteProductController);
 
 export default router;
