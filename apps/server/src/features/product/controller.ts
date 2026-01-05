@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ProductIdSchema } from "@/common/dto";
+import { formatZodError } from "@/common/utils/zod-error";
 import { GetAllProductsQuerySchema } from "./dto";
 import { favoriteProductService, getAllProductsService } from "./service";
 
@@ -15,10 +16,7 @@ export const getAllProductsController = async (
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsedQuery.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsedQuery.error),
 			});
 		}
 
@@ -42,10 +40,7 @@ export const favoriteProductController = async (
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsed.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsed.error),
 			});
 		}
 

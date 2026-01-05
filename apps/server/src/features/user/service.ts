@@ -1,21 +1,39 @@
 import prisma from "@tcl-ecommerce/db";
+import type { PaginationType } from "@/common/dto";
+import { paginationMetadata } from "@/common/utils/pagination-metadata";
 
-export const getUserFavouritesService = async (userId: string) => {
-	const result = await prisma.favorite.findMany({
-		where: { userId },
-		include: {
-			product: {
-				include: {
-					images: true,
-					seller: true,
+export const getUserFavouriteProductsService = async (
+	userId: string,
+	paginationQuery: PaginationType,
+) => {
+	const { page, limit } = paginationQuery;
+	const skip = (page - 1) * limit;
+
+	const [products, total] = await Promise.all([
+		prisma.favorite.findMany({
+			where: { userId },
+			include: {
+				product: {
+					include: {
+						images: true,
+						seller: true,
+					},
 				},
 			},
-		},
-	});
+			skip,
+			take: limit,
+		}),
+		prisma.favorite.count({ where: { userId } }),
+	]);
+
+	const pagination = paginationMetadata(page, limit, total);
 
 	return {
 		success: true,
 		message: "Favourites retrieved successfully",
-		data: result.map((favorite) => favorite.product),
+		data: {
+			products,
+			pagination,
+		},
 	};
 };

@@ -5,13 +5,16 @@ import prisma, {
 	Role,
 	SellerStatus,
 } from "@tcl-ecommerce/db";
-import { ApiError } from "@/utils/api-error";
-import { deleteFromCloudinary, uploadToCloudinary } from "@/utils/cloudinary";
+import { ApiError } from "@/common/utils/api-error";
+import {
+	deleteFromCloudinary,
+	uploadToCloudinary,
+} from "@/common/utils/cloudinary";
 import {
 	generateProductUniqueSlug,
 	generateSellerUniqueSlug,
-} from "@/utils/generate-unique-slug";
-import { paginationMetadata } from "@/utils/pagination-metadata";
+} from "@/common/utils/generate-unique-slug";
+import { paginationMetadata } from "@/common/utils/pagination-metadata";
 import type {
 	CreateSellerProductType,
 	GetAllSellersQueryType,

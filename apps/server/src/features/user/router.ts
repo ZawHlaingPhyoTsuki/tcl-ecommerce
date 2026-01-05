@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { requireAuth } from "@/middlewares";
-import { getUserFavouritesController } from "./controller";
+import { getUserFavouriteProductsController } from "./controller";
 
 const router: Router = Router();
 
-router.get("/me/favourites", requireAuth, getUserFavouritesController);
+router.get("/me/favourites", requireAuth, getUserFavouriteProductsController);
 
 export default router;

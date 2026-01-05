@@ -1,7 +1,10 @@
 import prisma, { type Category } from "@tcl-ecommerce/db";
-import { ApiError } from "@/utils/api-error";
-import { deleteFromCloudinary, uploadToCloudinary } from "@/utils/cloudinary";
-import { generateCategoryUniqueSlug } from "@/utils/generate-unique-slug";
+import { ApiError } from "@/common/utils/api-error";
+import {
+	deleteFromCloudinary,
+	uploadToCloudinary,
+} from "@/common/utils/cloudinary";
+import { generateCategoryUniqueSlug } from "@/common/utils/generate-unique-slug";
 import type { CreateCategoryType } from "./dto";
 
 export const getAllCategoryService = async () => {
@@ -51,7 +54,11 @@ export const createCategoryService = async (
 	} catch (error) {
 		// Cleanup uploaded image if creation fails
 		if (uploadResult?.publicId) {
-			await deleteFromCloudinary(uploadResult.publicId);
+			try {
+				await deleteFromCloudinary(uploadResult.publicId);
+			} catch (error) {
+				console.error("Failed to cleanup uploaded image:", error);
+			}
 		}
 		throw error;
 	}

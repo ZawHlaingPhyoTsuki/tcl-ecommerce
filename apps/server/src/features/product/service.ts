@@ -1,5 +1,5 @@
 import prisma, { type Prisma } from "@tcl-ecommerce/db";
-import { paginationMetadata } from "@/utils/pagination-metadata";
+import { paginationMetadata } from "@/common/utils/pagination-metadata";
 import type { GetAllProductsQueryType } from "./dto";
 
 export const getAllProductsService = async (query: GetAllProductsQueryType) => {
@@ -107,32 +107,58 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 export const favoriteProductService = async (
 	productId: string,
 	userId: string,
-) => {
-	// Check if already favorited
-	const existing = await prisma.favorite.findUnique({
-		where: { userId_productId: { userId, productId } },
-	});
-
-	if (existing) {
-		// Unfavorite
-		await prisma.favorite.delete({
-			where: { id: existing.id },
+): Promise<{
+	success: boolean;
+	message: string;
+	data?: {
+		favorited: boolean;
+	};
+}> => {
+	return await prisma.$transaction(async (tx) => {
+		// Verify product exists
+		const product = await tx.product.findUnique({
+			where: { id: productId },
+			select: { id: true },
 		});
+
+		if (!product) {
+			return {
+				success: false,
+				message: "Product not found",
+			};
+		}
+
+		// Check if already favorited
+		const existing = await tx.favorite.findUnique({
+			where: { userId_productId: { userId, productId } },
+		});
+
+		if (existing) {
+			// Unfavorite
+			await tx.favorite.delete({
+				where: { id: existing.id },
+			});
+
+			return {
+				success: true,
+				message: "Product unfavorited successfully",
+				data: {
+					favorited: false,
+				},
+			};
+		}
+
+		// Favorite
+		await tx.favorite.create({
+			data: { userId, productId },
+		});
+
 		return {
 			success: true,
-			message: "Product unfavorited successfully",
-			favorited: false,
+			message: "Product favorited successfully",
+			data: {
+				favorited: true,
+			},
 		};
-	}
-
-	// Favorite
-	await prisma.favorite.create({
-		data: { userId, productId },
 	});
-
-	return {
-		success: true,
-		message: "Product favorited successfully",
-		favorited: true,
-	};
 };

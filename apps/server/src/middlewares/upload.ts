@@ -1,5 +1,5 @@
 import multer, { type FileFilterCallback } from "multer";
-import { ApiError } from "@/utils/api-error";
+import { ApiError } from "@/common/utils/api-error";
 
 const storage = multer.memoryStorage();
 

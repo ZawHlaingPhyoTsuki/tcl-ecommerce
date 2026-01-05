@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { formatZodError } from "@/common/utils/zod-error";
 import { CreateCategorySchema } from "./dto";
 import { createCategoryService, getAllCategoryService } from "./service";
 
@@ -29,10 +30,7 @@ export const createCategoryController = async (
 			return res.status(400).json({
 				success: false,
 				message: "Validation failed",
-				errors: parsed.error.issues.map((err) => ({
-					path: err.path.join("."),
-					message: err.message,
-				})),
+				errors: formatZodError(parsed.error),
 			});
 		}
 
