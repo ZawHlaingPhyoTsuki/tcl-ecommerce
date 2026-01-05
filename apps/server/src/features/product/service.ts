@@ -1,4 +1,5 @@
 import prisma, { type Prisma } from "@tcl-ecommerce/db";
+import { ApiError } from "@/common/utils/api-error";
 import { paginationMetadata } from "@/common/utils/pagination-metadata";
 import type { GetAllProductsQueryType } from "./dto";
 
@@ -107,13 +108,7 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 export const favoriteProductService = async (
 	productId: string,
 	userId: string,
-): Promise<{
-	success: boolean;
-	message: string;
-	data?: {
-		favorited: boolean;
-	};
-}> => {
+) => {
 	return await prisma.$transaction(async (tx) => {
 		// Verify product exists
 		const product = await tx.product.findUnique({
@@ -122,10 +117,7 @@ export const favoriteProductService = async (
 		});
 
 		if (!product) {
-			return {
-				success: false,
-				message: "Product not found",
-			};
+			throw ApiError.notFound("Product not found");
 		}
 
 		// Check if already favorited

@@ -1,12 +1,12 @@
 model Review {
-  id        String   @id @default(uuid())
-  rating    Int      
-  comment   String?
+  id      String  @id @default(uuid())
+  rating  Int     @db.SmallInt
+  comment String? @db.VarChar(1000)
 
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -9,7 +9,7 @@ export const getUserFavouriteProductsService = async (
 	const { page, limit } = paginationQuery;
 	const skip = (page - 1) * limit;
 
-	const [products, total] = await Promise.all([
+	const [favorites, total] = await Promise.all([
 		prisma.favorite.findMany({
 			where: { userId },
 			include: {
@@ -32,7 +32,7 @@ export const getUserFavouriteProductsService = async (
 		success: true,
 		message: "Favourites retrieved successfully",
 		data: {
-			products,
+			favorites,
 			pagination,
 		},
 	};
