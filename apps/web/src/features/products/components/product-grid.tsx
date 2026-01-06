@@ -1,17 +1,19 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useProductFilters } from "../hooks/use-product-filters";
 import { useProductsQuery } from "../queries/use-products-query";
 import { ProductCard } from "./product-card";
 
 export function ProductGrid() {
-	const { data: products, isLoading, error } = useProductsQuery();
+	const { filters } = useProductFilters();
+	const { data: products, isLoading, error } = useProductsQuery(filters);
 
 	if (isLoading) {
 		return (
 			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-				{Array.from({ length: 8 }).map((_, i) => (
-					<div key={i} className="space-y-3">
+				{Array.from({ length: 8 }).map((_, index) => (
+					<div key={`skeleton-${Date.now()}-${index}`} className="space-y-3">
 						<Skeleton className="aspect-square rounded-lg" />
 						<Skeleton className="h-4 w-2/3" />
 						<Skeleton className="h-4 w-1/3" />

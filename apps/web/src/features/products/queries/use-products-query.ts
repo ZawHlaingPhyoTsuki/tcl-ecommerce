@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../api/products";
-import { useProductStore } from "../hooks/use-product-store";
+import type { ProductFilters } from "../types";
 
-export const useProductsQuery = () => {
-	const { filters } = useProductStore();
-
+export const useProductsQuery = (filters?: Partial<ProductFilters>) => {
 	return useQuery({
 		queryKey: ["products", filters],
-		queryFn: () => getProducts(filters),
+		queryFn: () => getProducts(filters || {}),
 		staleTime: 5 * 60 * 1000, // 5 minutes
 	});
 };

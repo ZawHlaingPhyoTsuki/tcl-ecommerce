@@ -1,12 +1,7 @@
-"use client";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProductFilters } from "@/features/products/components/product-filters";
 import { ProductGrid } from "@/features/products/components/product-grid";
 
-const queryClient = new QueryClient();
-
-function ProductsContent() {
+export default async function ProductsPage() {
 	return (
 		<div className="min-h-screen">
 			<div className="container mx-auto px-4 py-8">
@@ -45,13 +40,5 @@ function ProductsContent() {
 				</div>
 			</div>
 		</div>
-	);
-}
-
-export default function ProductsPage() {
-	return (
-		<QueryClientProvider client={queryClient}>
-			<ProductsContent />
-		</QueryClientProvider>
 	);
 }

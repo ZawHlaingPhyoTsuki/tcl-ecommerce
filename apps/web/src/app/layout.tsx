@@ -4,6 +4,7 @@ import { Nunito_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import "../index.css";
 import { getLocale, getMessages } from "next-intl/server";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
 
@@ -31,14 +32,16 @@ export default async function RootLayout({
 			className={nunitoSans.className}
 		>
 			<body className="antialiased">
-				<NextIntlClientProvider messages={messages}>
-					<Providers>
-						<div className="grid h-svh grid-rows-[auto_1fr]">
-							<Header />
-							{children}
-						</div>
-					</Providers>
-				</NextIntlClientProvider>
+				<NuqsAdapter>
+					<NextIntlClientProvider messages={messages}>
+						<Providers>
+							<div className="grid h-svh grid-rows-[auto_1fr]">
+								<Header />
+								{children}
+							</div>
+						</Providers>
+					</NextIntlClientProvider>
+				</NuqsAdapter>
 			</body>
 		</html>
 	);

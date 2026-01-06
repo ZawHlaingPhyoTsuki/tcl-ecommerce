@@ -14,7 +14,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { useProductStore } from "../hooks/use-product-store";
+import { useProductFilters } from "../hooks/use-product-filters";
 
 const categories = [
 	{ id: "electronics", name: "Electronics" },
@@ -25,7 +25,7 @@ const categories = [
 ];
 
 export function ProductFilters() {
-	const { filters, updateFilters, resetFilters } = useProductStore();
+	const { filters, updateFilters, resetFilters } = useProductFilters();
 
 	return (
 		<div className="space-y-6">
@@ -53,7 +53,7 @@ export function ProductFilters() {
 								onCheckedChange={(checked) => {
 									const newCategories = checked
 										? [...filters.category, cat.id]
-										: filters.category.filter((c) => c !== cat.id);
+										: filters.category.filter((c: string) => c !== cat.id);
 									updateFilters({ category: newCategories });
 								}}
 							/>
@@ -71,13 +71,14 @@ export function ProductFilters() {
 			<div>
 				<Label className="mb-3 block">Price Range</Label>
 				<Slider
-					value={[filters.minPrice, filters.maxPrice]}
+					value={[filters.minPrice, filters.maxPrice] as [number, number]}
 					min={0}
 					max={10000}
 					step={100}
-					onValueChange={([min, max]) =>
-						updateFilters({ minPrice: min, maxPrice: max })
-					}
+					onValueChange={(value) => {
+						const [min, max] = value as [number, number];
+						updateFilters({ minPrice: min, maxPrice: max });
+					}}
 					className="my-4"
 				/>
 				<div className="flex justify-between text-gray-600 text-sm">
@@ -107,11 +108,18 @@ export function ProductFilters() {
 							| "price-desc"
 							| "name-asc"
 							| "name-desc"
-							| "newest",
-					) => updateFilters({ sortBy: value })}
+							| "newest"
+							| null,
+					) => {
+						if (value) {
+							updateFilters({ sortBy: value });
+						} else {
+							updateFilters({ sortBy: "newest" });
+						}
+					}}
 				>
 					<SelectTrigger>
-						<SelectValue placeholder="Sort by" />
+						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
 						<SelectGroup>
