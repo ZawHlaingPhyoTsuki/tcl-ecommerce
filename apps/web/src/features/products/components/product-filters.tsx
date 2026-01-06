@@ -24,6 +24,14 @@ const categories = [
 	{ id: "sports", name: "Sports" },
 ];
 
+const sortOptions = [
+	{ label: "Newest First", value: "newest" },
+	{ label: "Price: Low to High", value: "price-asc" },
+	{ label: "Price: High to Low", value: "price-desc" },
+	{ label: "Name: A to Z", value: "name-asc" },
+	{ label: "Name: Z to A", value: "name-desc" },
+];
+
 export function ProductFilters() {
 	const { filters, updateFilters, resetFilters } = useProductFilters();
 
@@ -101,21 +109,24 @@ export function ProductFilters() {
 			<div>
 				<Label className="mb-2 block">Sort By</Label>
 				<Select
-					value={filters.sortBy}
-					onValueChange={(
-						value:
+					items={sortOptions}
+					value={
+						filters.sortBy as
+							| "newest"
 							| "price-asc"
 							| "price-desc"
 							| "name-asc"
 							| "name-desc"
-							| "newest"
-							| null,
-					) => {
-						if (value) {
-							updateFilters({ sortBy: value });
-						} else {
-							updateFilters({ sortBy: "newest" });
-						}
+					}
+					onValueChange={(value) => {
+						updateFilters({
+							sortBy: value as
+								| "newest"
+								| "price-asc"
+								| "price-desc"
+								| "name-asc"
+								| "name-desc",
+						});
 					}}
 				>
 					<SelectTrigger>
@@ -123,11 +134,11 @@ export function ProductFilters() {
 					</SelectTrigger>
 					<SelectContent>
 						<SelectGroup>
-							<SelectItem value="newest">Newest First</SelectItem>
-							<SelectItem value="price-asc">Price: Low to High</SelectItem>
-							<SelectItem value="price-desc">Price: High to Low</SelectItem>
-							<SelectItem value="name-asc">Name: A to Z</SelectItem>
-							<SelectItem value="name-desc">Name: Z to A</SelectItem>
+							{sortOptions.map((option) => (
+								<SelectItem key={option.value} value={option.value}>
+									{option.label}
+								</SelectItem>
+							))}
 						</SelectGroup>
 					</SelectContent>
 				</Select>
