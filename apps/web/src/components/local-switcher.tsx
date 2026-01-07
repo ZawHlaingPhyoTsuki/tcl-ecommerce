@@ -1,5 +1,4 @@
 import { useLocale, useTranslations } from "next-intl";
-import { locales } from "@/i18n/config";
 import LocaleSwitcherSelect from "./local-switcher-select";
 
 export default function LocaleSwitcher() {
@@ -9,10 +8,20 @@ export default function LocaleSwitcher() {
 	return (
 		<LocaleSwitcherSelect
 			defaultValue={locale}
-			items={locales.map((locale) => ({
-				value: locale,
-				label: t(locale),
-			}))}
+			items={[
+				{
+					value: "en",
+					label: t("en"),
+				},
+				{
+					value: "mm",
+					label: t("mm"),
+				},
+				{
+					value: "th",
+					label: t("th"),
+				},
+			]}
 			label={t("label")}
 		/>
 	);

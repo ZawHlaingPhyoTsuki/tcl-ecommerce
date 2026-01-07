@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -25,9 +27,9 @@ export default function UserMenu() {
 
 	if (!session) {
 		return (
-			<Link href="/login">
-				<Button variant="outline">Sign In</Button>
-			</Link>
+			<Button render={<Link href="/login" />} variant="outline">
+				Sign In
+			</Button>
 		);
 	}
 

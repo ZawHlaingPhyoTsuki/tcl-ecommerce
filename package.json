@@ -33,7 +33,8 @@
 		"db:start": "turbo -F @tcl-ecommerce/db db:start",
 		"db:watch": "turbo -F @tcl-ecommerce/db db:watch",
 		"db:stop": "turbo -F @tcl-ecommerce/db db:stop",
-		"db:down": "turbo -F @tcl-ecommerce/db db:down"
+		"db:down": "turbo -F @tcl-ecommerce/db db:down",
+		"db:seed": "turbo -F @tcl-ecommerce/db db:seed"
 	},
 	"dependencies": {
 		"@tcl-ecommerce/env": "workspace:*",

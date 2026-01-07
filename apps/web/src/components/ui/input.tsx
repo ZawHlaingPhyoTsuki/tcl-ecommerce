@@ -1,53 +1,61 @@
-"use client";
+import * as React from "react"
+import { Input as BaseInput } from "@base-ui/react/input"
 
-import { Input as InputPrimitive } from "@base-ui/react/input";
-import type * as React from "react";
+import { cn } from "@/lib/utils"
 
-import { cn } from "@/lib/utils";
-
-type InputProps = Omit<
-  InputPrimitive.Props & React.RefAttributes<HTMLInputElement>,
-  "size"
-> & {
-  size?: "sm" | "default" | "lg" | number;
-  unstyled?: boolean;
-};
-
-function Input({
-  className,
-  size = "default",
-  unstyled = false,
-  ...props
-}: InputProps) {
-  return (
-    <span
-      className={
-        cn(
-          !unstyled &&
-            "relative inline-flex w-full rounded-lg border border-input bg-background bg-clip-padding text-base shadow-xs ring-ring/24 transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-has-disabled:not-has-focus-visible:not-has-aria-invalid:before:shadow-[0_1px_--theme(--color-black/4%)] has-focus-visible:has-aria-invalid:border-destructive/64 has-focus-visible:has-aria-invalid:ring-destructive/16 has-aria-invalid:border-destructive/36 has-focus-visible:border-ring has-disabled:opacity-64 has-[:disabled,:focus-visible,[aria-invalid]]:shadow-none has-focus-visible:ring-[3px] sm:text-sm dark:bg-input/32 dark:not-in-data-[slot=group]:bg-clip-border dark:has-aria-invalid:ring-destructive/24 dark:not-has-disabled:not-has-focus-visible:not-has-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/8%)]",
-          className,
-        ) || undefined
-      }
-      data-size={size}
-      data-slot="input-control"
-    >
-      <InputPrimitive
-        className={cn(
-          "h-8.5 w-full min-w-0 rounded-[inherit] px-[calc(--spacing(3)-1px)] leading-8.5 outline-none placeholder:text-muted-foreground/72 sm:h-7.5 sm:leading-7.5",
-          size === "sm" &&
-            "h-7.5 px-[calc(--spacing(2.5)-1px)] leading-7.5 sm:h-6.5 sm:leading-6.5",
-          size === "lg" && "h-9.5 leading-9.5 sm:h-8.5 sm:leading-8.5",
-          props.type === "search" &&
-            "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none [&::-webkit-search-results-button]:appearance-none [&::-webkit-search-results-decoration]:appearance-none",
-          props.type === "file" &&
-            "text-muted-foreground file:me-3 file:bg-transparent file:font-medium file:text-foreground file:text-sm",
-        )}
-        data-slot="input"
-        size={typeof size === "number" ? size : undefined}
-        {...props}
-      />
-    </span>
-  );
+interface InputProps extends React.ComponentProps<typeof BaseInput> {
+	inputContainerClassName?: string
+	leadingIcon?: React.ReactNode
+	trailingIcon?: React.ReactNode
 }
 
-export { Input, type InputProps };
+function Input({
+	inputContainerClassName,
+	className,
+	type,
+	leadingIcon,
+	trailingIcon,
+	disabled,
+	...props
+}: InputProps) {
+	return (
+		<div
+			className={cn(
+				"group relative w-full has-[[data-slot=input][data-disabled]]:pointer-events-none has-[[data-slot=input][data-disabled]]:opacity-50",
+				inputContainerClassName
+			)}
+			data-slot="input-container"
+		>
+			{leadingIcon && (
+				<span
+					data-slot="input-leading-icon"
+					className="text-muted-foreground absolute top-1/2 left-3 shrink-0 -translate-y-1/2 [&_svg]:shrink-0 [&_svg:not([class*='pointer-events-'])]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+				>
+					{leadingIcon}
+				</span>
+			)}
+			<BaseInput
+				type={type}
+				data-slot="input"
+				className={cn(
+					"placeholder:text-muted-foreground selection:bg-primary group-hover:border-ring/70 selection:text-primary-foreground bg-input file:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/50 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow,border-color] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] md:text-sm",
+					leadingIcon && "pl-10",
+					trailingIcon && "pr-10",
+					className
+				)}
+				disabled={disabled}
+				{...props}
+			/>
+			{trailingIcon && (
+				<span
+					data-slot="input-trailing-icon"
+					className="text-muted-foreground absolute top-1/2 right-3 shrink-0 -translate-y-1/2 [&_svg]:shrink-0 [&_svg:not([class*='pointer-events-'])]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+				>
+					{trailingIcon}
+				</span>
+			)}
+		</div>
+	)
+}
+
+export { Input }

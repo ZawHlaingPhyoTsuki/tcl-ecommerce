@@ -1,28 +1,35 @@
 "use client";
 
-import { FilterX, Search } from "lucide-react";
+import { SearchIcon } from "lucide-react";
+// import {
+// 	NumberField,
+// 	NumberFieldDecrement,
+// 	NumberFieldGroup,
+// 	NumberFieldIncrement,
+// 	NumberFieldInput,
+// } from "@/components/ui/number-field";
+// import {
+// 	Select,
+// 	SelectItem,
+// 	SelectPopup,
+// 	SelectTrigger,
+// 	SelectValue,
+// } from "@/components/ui/select";
+// import { Slider } from "@/components/ui/slider";
+// import { Spinner } from "@/components/ui/spinner";
+import { debounce } from "nuqs";
+import { useFilters } from "@/app/(site)/products/search-params";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { useProductFilters } from "../hooks/use-product-filters";
 
-const categories = [
-	{ id: "electronics", name: "Electronics" },
-	{ id: "clothing", name: "Clothing" },
-	{ id: "books", name: "Books" },
-	{ id: "home", name: "Home & Kitchen" },
-	{ id: "sports", name: "Sports" },
-];
+// const categories = [
+// 	{ id: "electronics", name: "Electronics" },
+// 	{ id: "clothing", name: "Clothing" },
+// 	{ id: "books", name: "Books" },
+// 	{ id: "home", name: "Home & Kitchen" },
+// 	{ id: "sports", name: "Sports" },
+// ];
 
 const sortOptions = [
 	{ label: "Newest First", value: "newest" },
@@ -32,66 +39,105 @@ const sortOptions = [
 	{ label: "Name: Z to A", value: "name-desc" },
 ];
 
-export function ProductFilters() {
-	const { filters, updateFilters, resetFilters } = useProductFilters();
+interface ProductFiltersProps {
+	className?: string;
+}
+
+export function ProductFilters({ className }: ProductFiltersProps) {
+	const [filters, setFilters] = useFilters();
+
+	const onClear = () => {
+		setFilters({
+			search: null,
+			category: null,
+			minPrice: null,
+			maxPrice: null,
+			inStock: null,
+			sortBy: "newest",
+		});
+	};
 
 	return (
-		<div className="space-y-6">
-			<div>
-				<Label htmlFor="search" className="mb-2 flex items-center gap-2">
-					<Search className="h-4 w-4" />
-					Search Products
-				</Label>
-				<Input
-					id="search"
-					placeholder="Search..."
-					value={filters.search}
-					onChange={(e) => updateFilters({ search: e.target.value })}
-				/>
-			</div>
+		<div className={cn("space-y-6 py-4", className)}>
+			<h3 className="font-semibold text-lg">Filter</h3>
 
-			<div>
-				<Label className="mb-3 block">Categories</Label>
-				<div className="space-y-2">
-					{categories.map((cat) => (
-						<div key={cat.id} className="flex items-center space-x-2">
-							<Checkbox
-								id={`cat-${cat.id}`}
-								checked={filters.category.includes(cat.id)}
-								onCheckedChange={(checked) => {
-									const newCategories = checked
-										? [...filters.category, cat.id]
-										: filters.category.filter((c: string) => c !== cat.id);
-									updateFilters({ category: newCategories });
-								}}
-							/>
-							<Label
-								htmlFor={`cat-${cat.id}`}
-								className="cursor-pointer text-sm"
-							>
-								{cat.name}
-							</Label>
-						</div>
-					))}
+			<Input
+				id="search"
+				placeholder="Search..."
+				leadingIcon={<SearchIcon />}
+				type="search"
+				value={filters.search}
+				onValueChange={(value) => {
+					setFilters(
+						{ search: value },
+						{
+							limitUrlUpdates: value === "" ? undefined : debounce(500),
+						},
+					);
+				}}
+			/>
+
+			{/* 
+			<div className="space-y-2">
+				<div>
+					<Label className="mb-3 block">Price Range</Label>
+					<Slider
+						value={[filters.minPrice, filters.maxPrice] as [number, number]}
+						min={0}
+						max={10000}
+						step={100}
+						onValueChange={(value) => {
+							const [min, max] = value as [number, number];
+							updateFilters({ minPrice: min, maxPrice: max });
+						}}
+						className="my-4"
+					/>
+					<div className="flex justify-between text-gray-600 text-sm">
+						<span>{filters.minPrice.toLocaleString()} BAHT</span>
+						<span>{filters.maxPrice.toLocaleString()} BAHT</span>
+					</div>
 				</div>
-			</div>
-
-			<div>
-				<Label className="mb-3 block">Price Range</Label>
-				<Slider
-					value={[filters.minPrice, filters.maxPrice] as [number, number]}
-					min={0}
-					max={10000}
-					step={100}
-					onValueChange={(value) => {
-						const [min, max] = value as [number, number];
-						updateFilters({ minPrice: min, maxPrice: max });
-					}}
-					className="my-4"
-				/>
-				<div className="flex justify-between text-gray-600 text-sm">
-					<span>{filters.minPrice.toLocaleString()} BAHT</span>
-					<span>{filters.maxPrice.toLocaleString()} BAHT</span>
+				<div className="flex flex-col items-center space-y-2">
+					<div className="flex flex-col items-start gap-2">
+						<Label htmlFor="minPrice">Min Price</Label>
+						<NumberField
+							value={filters.minPrice}
+							onValueChange={(value) => {
+								// Handle null case by falling back to 0
+								const minValue = value ?? 0;
+								updateFilters({ minPrice: minValue });
+							}}
+							id="minPrice"
+							min={0}
+							max={filters.maxPrice}
+						>
+							<NumberFieldGroup>
+								<NumberFieldDecrement />
+								<NumberFieldInput />
+								<NumberFieldIncrement />
+							</NumberFieldGroup>
+						</NumberField>
+					</div>
+					<div className="flex flex-col items-start gap-2">
+						<Label htmlFor="maxPrice">Max Price</Label>
+						<NumberField
+							value={filters.maxPrice}
+							onValueChange={(value) => {
+								// Handle null case by falling back to 0
+								const minValue = value ?? 0;
+								updateFilters({ maxPrice: minValue });
+							}}
+							id="maxPrice"
+							min={filters.minPrice}
+							max={10000}
+						>
+							<NumberFieldGroup>
+								<NumberFieldDecrement />
+								<NumberFieldInput />
+								<NumberFieldIncrement />
+							</NumberFieldGroup>
+						</NumberField>
+					</div>
 				</div>
 			</div>
 
@@ -132,22 +178,17 @@ export function ProductFilters() {
 					<SelectTrigger>
 						<SelectValue />
 					</SelectTrigger>
-					<SelectContent>
-						<SelectGroup>
-							{sortOptions.map((option) => (
-								<SelectItem key={option.value} value={option.value}>
-									{option.label}
-								</SelectItem>
-							))}
-						</SelectGroup>
-					</SelectContent>
+					<SelectPopup alignItemWithTrigger={false}>
+						{sortOptions.map((option) => (
+							<SelectItem key={option.value} value={option.value}>
+								{option.label}
+							</SelectItem>
+						))}
+					</SelectPopup>
 				</Select>
-			</div>
+			</div> */}
 
-			<Button variant="outline" className="w-full" onClick={resetFilters}>
-				<FilterX className="mr-2 h-4 w-4" />
-				Clear All Filters
-			</Button>
+			<Button onClick={onClear}>Clear</Button>
 		</div>
 	);
 }

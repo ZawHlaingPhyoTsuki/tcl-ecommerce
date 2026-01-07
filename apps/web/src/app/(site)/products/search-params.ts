@@ -1,4 +1,7 @@
+import { useQueryStates } from "nuqs";
 import {
+	createLoader,
+	type Options,
 	parseAsArrayOf,
 	parseAsBoolean,
 	parseAsInteger,
@@ -6,18 +9,18 @@ import {
 	parseAsStringLiteral,
 } from "nuqs/server";
 
-export const filterSearchParams = {
+const searchParams = {
 	page: parseAsInteger.withDefault(1),
 	limit: parseAsInteger.withDefault(12),
 
 	search: parseAsString.withDefault(""),
 
-	minPrice: parseAsInteger.withDefault(0),
-	maxPrice: parseAsInteger.withDefault(10000),
-	category: parseAsArrayOf(parseAsString).withDefault([]),
-	sellerId: parseAsString.withDefault(""),
-	inStock: parseAsBoolean.withDefault(false),
-	currency: parseAsStringLiteral(["BAHT", "KYAT"]).withDefault("BAHT"),
+	minPrice: parseAsInteger,
+	maxPrice: parseAsInteger,
+	category: parseAsArrayOf(parseAsString),
+	sellerId: parseAsString,
+	inStock: parseAsBoolean,
+	// currency: parseAsStringLiteral(["BAHT", "KYAT"]).withDefault("BAHT"),
 
 	sortBy: parseAsStringLiteral([
 		"price-asc",
@@ -27,3 +30,11 @@ export const filterSearchParams = {
 		"newest",
 	]).withDefault("newest"),
 };
+
+export const loadFilters = createLoader(searchParams);
+
+export const useFilters = (options: Options = {}) =>
+	useQueryStates(searchParams, {
+		shallow: false,
+		...options,
+	});

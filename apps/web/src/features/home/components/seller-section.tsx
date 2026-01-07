@@ -1,81 +1,55 @@
-"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import type { ICategory } from "../types";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRef, useState } from "react";
+interface SellerSectionProps {
+	sellers: ICategory[];
+}
 
-export default function SellerSection() {
-	const [sellerScrollPosition, setSellerScrollPosition] = useState(0);
-	const sellerContainerRef = useRef<HTMLDivElement>(null);
-
-	const ITEM_WIDTH = 140; // w-32 + gap = 128px + 12px
-
-	const scrollSellers = (direction: "left" | "right") => {
-		if (!sellerContainerRef.current) return;
-
-		const containerWidth = sellerContainerRef.current.clientWidth;
-		const maxScroll = sellerContainerRef.current.scrollWidth - containerWidth;
-
-		let newPosition = sellerScrollPosition;
-		if (direction === "left") {
-			newPosition = Math.max(0, sellerScrollPosition - ITEM_WIDTH * 3); // Scroll 3 items
-		} else {
-			newPosition = Math.min(maxScroll, sellerScrollPosition + ITEM_WIDTH * 3);
-		}
-
-		sellerContainerRef.current.scrollTo({
-			left: newPosition,
-			behavior: "smooth",
-		});
-		setSellerScrollPosition(newPosition);
-	};
-
-	const maxScroll = sellerContainerRef.current
-		? sellerContainerRef.current.scrollWidth -
-			sellerContainerRef.current.clientWidth
-		: 0;
-
-	const items = Array.from({ length: 30 });
-
+export default function SellerSection({ sellers }: SellerSectionProps) {
 	return (
-		<div className="my-4">
-			<h2 className="mb-3 font-semibold text-xl">Sellers</h2>
-
-			<div className="relative">
-				{/* Left Navigation Button */}
-				<button
-					type="button"
-					onClick={() => scrollSellers("left")}
-					disabled={sellerScrollPosition <= 0}
-					className="absolute top-1/2 left-0 z-10 -translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-0"
-				>
-					<ChevronLeft className="h-5 w-5" />
-				</button>
-
-				{/* Scrollable Container */}
-				<div
-					ref={sellerContainerRef}
-					className="scrollbar-hide flex max-h-80 flex-col flex-wrap gap-3 overflow-x-hidden" // Changed to hidden
-				>
-					{items.map((_, index) => (
-						<div
-							key={index}
-							className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg bg-muted font-medium text-white"
+		<div className="mt-4">
+			<h2 className="mb-4 font-bold text-2xl tracking-tight">Sellers</h2>
+			<ScrollArea
+				className="max-w-full rounded-2xl border bg-card"
+				orientation="horizontal"
+			>
+				<div className="flex w-max gap-4 p-4 md:gap-6 md:p-6">
+					{sellers.map((seller) => (
+						<Link
+							key={seller.id}
+							href={`/products?sellerId=${seller.id}`}
+							className="group relative flex w-24 shrink-0 flex-col items-center gap-3 md:w-32"
 						>
-							Seller {index + 1}
-						</div>
+							{/* Image Container */}
+							<div className="relative aspect-square w-full overflow-hidden rounded-full bg-muted shadow-sm ring-1 ring-border transition-all duration-300 group-hover:shadow-md group-hover:ring-primary/20">
+								{seller.imageUrl ? (
+									<Image
+										src={seller.imageUrl}
+										alt={seller.name}
+										fill
+										className="object-cover transition-transform duration-500 group-hover:scale-110"
+										sizes="(max-width: 768px) 96px, 128px"
+									/>
+								) : (
+									<div className="flex h-full w-full items-center justify-center bg-linear-to-br from-muted to-muted/50 text-muted-foreground text-xs">
+										No Image
+									</div>
+								)}
+								<div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+							</div>
+
+							{/* Seller Name Below Image */}
+							<div className="flex flex-col items-center">
+								<span className="text-center font-semibold text-foreground text-sm leading-tight transition-colors group-hover:text-primary md:text-base">
+									{seller.name}
+								</span>
+							</div>
+						</Link>
 					))}
 				</div>
-
-				{/* Right Navigation Button */}
-				<button
-					type="button"
-					onClick={() => scrollSellers("right")}
-					disabled={sellerScrollPosition >= maxScroll}
-					className="absolute top-1/2 right-0 z-10 translate-x-4 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg disabled:opacity-0"
-				>
-					<ChevronRight className="h-5 w-5" />
-				</button>
-			</div>
+			</ScrollArea>
 		</div>
 	);
 }

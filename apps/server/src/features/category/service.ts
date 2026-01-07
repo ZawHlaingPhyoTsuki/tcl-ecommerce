@@ -33,13 +33,19 @@ export const createCategoryService = async (
 	}
 
 	// Upload single image
-	let uploadResult: { url: string; publicId: string } | null = null;
+	let uploadResult: {
+		url: string;
+		publicId: string;
+		width: number;
+		height: number;
+	} | null = null;
 	if (file) {
 		const folder = "tachileik-shop/category";
 		uploadResult = await uploadToCloudinary(file.buffer, { folder });
 	}
 
-	let result: Category;
+	let result: Omit<Category, "imagePublicId">;
+
 	try {
 		result = await prisma.category.create({
 			data: {
@@ -49,6 +55,18 @@ export const createCategoryService = async (
 					: await generateCategoryUniqueSlug(name, prisma.category),
 				imageUrl: uploadResult?.url || null,
 				imagePublicId: uploadResult?.publicId || null,
+				imageWidth: uploadResult?.width || null,
+				imageHeight: uploadResult?.height || null,
+			},
+			select: {
+				id: true,
+				slug: true,
+				name: true,
+				imageUrl: true,
+				imageWidth: true,
+				imageHeight: true,
+				createdAt: true,
+				updatedAt: true,
 			},
 		});
 	} catch (error) {

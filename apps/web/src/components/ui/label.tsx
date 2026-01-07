@@ -1,26 +1,18 @@
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
+import * as React from "react"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
-function Label({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"label">) {
-  const defaultProps = {
-    className: cn(
-      "inline-flex items-center gap-2 text-base/4.5 sm:text-sm/4 font-medium",
-      className,
-    ),
-    "data-slot": "label",
-  };
-
-  return useRender({
-    defaultTagName: "label",
-    props: mergeProps<"label">(defaultProps, props),
-    render,
-  });
+function Label({ className, ...props }: React.ComponentProps<"label">) {
+	return (
+		<label
+			data-slot="label"
+			className={cn(
+				"flex items-center gap-2 text-sm leading-none font-medium select-none",
+				className
+			)}
+			{...props}
+		/>
+	)
 }
 
-export { Label };
+export { Label }

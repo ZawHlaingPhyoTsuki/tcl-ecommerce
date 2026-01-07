@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import "../index.css";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale } from "next-intl/server";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
@@ -25,15 +25,21 @@ export default async function RootLayout({
 	children,
 }: Readonly<RootLayoutProps>) {
 	const locale = await getLocale();
-	const messages = await getMessages();
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
+			<head>
+				<script
+					crossOrigin="anonymous"
+					src="//unpkg.com/react-scan/dist/auto.global.js"
+				/>
+				{/* rest of your scripts go under */}
+			</head>
 			<body className={`${inter.variable} antialiased`}>
 				<NuqsAdapter>
-					<NextIntlClientProvider messages={messages}>
+					<NextIntlClientProvider>
 						<Providers>
-							<div className="root grid h-svh grid-rows-[auto_1fr]">
+							<div className="root">
 								<Header />
 								{children}
 							</div>
