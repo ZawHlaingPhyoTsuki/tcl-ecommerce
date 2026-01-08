@@ -10,8 +10,8 @@ export type Filters = {
 	search: string;
 	minPrice: number | null;
 	maxPrice: number | null;
-	category: string[] | null;
-	sellerId: string | null;
+	category: string | null;
+	seller: string | null;
 	inStock: boolean | null;
 	sortBy: "newest" | "price-asc" | "price-desc" | "name-asc" | "name-desc";
 };
@@ -39,13 +39,11 @@ export const getProducts = async (
 	}
 
 	if (filters.category) {
-		filters.category.forEach((cat) => {
-			queryParams.append("category", cat);
-		});
+		queryParams.append("category", filters.category);
 	}
 
-	if (filters.sellerId !== null) {
-		queryParams.append("sellerId", filters.sellerId);
+	if (filters.seller) {
+		queryParams.append("seller", filters.seller);
 	}
 
 	if (filters.inStock !== null) {

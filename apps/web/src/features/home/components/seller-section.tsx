@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { ICategory } from "@/types/api";
 
 interface SellerSectionProps {
@@ -11,10 +11,7 @@ export default function SellerSection({ sellers }: SellerSectionProps) {
 	return (
 		<div className="mt-4">
 			<h2 className="mb-4 font-bold text-2xl tracking-tight">Sellers</h2>
-			<ScrollArea
-				className="max-w-full rounded-2xl border bg-card"
-				orientation="horizontal"
-			>
+			<ScrollArea className="max-w-full rounded-2xl border bg-card">
 				<div className="flex w-max gap-4 p-4 md:gap-6 md:p-6">
 					{sellers.map((seller) => (
 						<Link
@@ -49,6 +46,7 @@ export default function SellerSection({ sellers }: SellerSectionProps) {
 						</Link>
 					))}
 				</div>
+				<ScrollBar orientation="horizontal" />
 			</ScrollArea>
 		</div>
 	);

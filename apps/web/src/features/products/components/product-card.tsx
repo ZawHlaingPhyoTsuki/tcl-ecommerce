@@ -83,13 +83,12 @@ export function ProductCard({ product }: ProductCardProps) {
 				</div>
 			</CardContent>
 
-			<CardFooter className="p-4 pt-0">
-				<Button
-					className="w-full"
-					render={<Link href={`/products/${product.id}`} />}
-				>
-					<Eye className="h-4 w-4" />
-					View
+			<CardFooter className="border-none bg-card p-4 pt-0">
+				<Button className="w-full" asChild>
+					<Link href={`/products/${product.id}`}>
+						<Eye className="h-4 w-4" />
+						View
+					</Link>
 				</Button>
 			</CardFooter>
 		</Card>

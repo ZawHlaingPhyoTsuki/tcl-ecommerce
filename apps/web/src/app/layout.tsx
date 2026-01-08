@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import "../index.css";
 import { getLocale } from "next-intl/server";
@@ -7,8 +7,15 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
 
-const inter = Inter({
-	variable: "--font-inter",
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+
+const geistSans = Geist({
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+	variable: "--font-geist-mono",
 	subsets: ["latin"],
 });
 
@@ -27,7 +34,7 @@ export default async function RootLayout({
 	const locale = await getLocale();
 
 	return (
-		<html lang={locale} suppressHydrationWarning>
+		<html lang={locale} className={inter.className} suppressHydrationWarning>
 			{process.env.NODE_ENV === "development" && (
 				<head>
 					<script
@@ -36,7 +43,9 @@ export default async function RootLayout({
 					/>
 				</head>
 			)}
-			<body className={`${inter.variable} antialiased`}>
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+			>
 				<NuqsAdapter>
 					<NextIntlClientProvider>
 						<Providers>
