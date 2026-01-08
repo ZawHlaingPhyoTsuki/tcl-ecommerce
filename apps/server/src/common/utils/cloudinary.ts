@@ -13,7 +13,12 @@ export const uploadToCloudinary = async (
 		folder: string;
 		public_id?: string;
 	},
-): Promise<{ url: string; publicId: string }> => {
+): Promise<{
+	url: string;
+	publicId: string;
+	width: number;
+	height: number;
+}> => {
 	return new Promise((resolve, reject) => {
 		cloudinary.uploader
 			.upload_stream(
@@ -29,6 +34,8 @@ export const uploadToCloudinary = async (
 					resolve({
 						url: result.secure_url,
 						publicId: result.public_id,
+						width: result.width,
+						height: result.height,
 					});
 				},
 			)

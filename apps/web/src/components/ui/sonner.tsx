@@ -2,48 +2,35 @@
 
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
-
-  return (
-    <Sonner
-      theme={theme as ToasterProps["theme"]}
-      className="toaster group"
-      icons={{
-        success: (
-          <CircleCheckIcon className="size-4" />
-        ),
-        info: (
-          <InfoIcon className="size-4" />
-        ),
-        warning: (
-          <TriangleAlertIcon className="size-4" />
-        ),
-        error: (
-          <OctagonXIcon className="size-4" />
-        ),
-        loading: (
-          <Loader2Icon className="size-4 animate-spin" />
-        ),
-      }}
-      style={
-        {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-          "--border-radius": "var(--radius)",
-        } as React.CSSProperties
-      }
-      toastOptions={{
-        classNames: {
-          toast: "cn-toast",
-        },
-      }}
-      {...props}
-    />
-  )
+	const { theme = "system" } = useTheme()
+	return (
+		<Sonner
+			theme={theme as ToasterProps["theme"]}
+			className="toaster group"
+			style={
+				{
+					"--normal-bg": "var(--color-popover)",
+					"--normal-text": "var(--color-popover-foreground)",
+					"--normal-border": "var(--color-border)",
+					"--error-bg": "var(--color-danger)",
+					"--error-text": "var(--color-danger-foreground)",
+					"--error-border": "var(--color-danger-border)",
+					"--warning-bg": "var(--color-warning)",
+					"--warning-text": "var(--color-warning-foreground)",
+					"--warning-border": "var(--color-warning-border)",
+					"--info-bg": "var(--color-info)",
+					"--info-text": "var(--color-info-foreground)",
+					"--info-border": "var(--color-info-border)",
+					"--success-bg": "var(--color-success)",
+					"--success-text": "var(--color-success-foreground)",
+					"--success-border": "var(--color-success-border)",
+				} as React.CSSProperties
+			}
+			{...props}
+		/>
+	)
 }
 
 export { Toaster }

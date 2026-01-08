@@ -8,10 +8,9 @@ export const GetAllProductsQuerySchema = PaginationSchema.extend({
 	// Filters
 	minPrice: z.coerce.number().int().min(0).optional(),
 	maxPrice: z.coerce.number().int().min(0).optional(),
-	categoryId: z.uuidv4({ error: "Invalid category ID format" }).optional(),
-	sellerId: z.uuidv4({ error: "Invalid seller ID format" }).optional(),
+	categorySlug: z.string().optional(),
+	sellerSlug: z.string().optional(),
 	inStock: z.coerce.boolean().optional(),
-	currency: z.enum(["BAHT", "KYAT"]).optional(),
 
 	// Sorting
 	sortBy: z

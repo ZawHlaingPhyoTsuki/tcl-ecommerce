@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import type { Locale } from "@/i18n/config";
 import { setUserLocale } from "@/i18n/locale";
+import { Button } from "./ui/button";
 
 type Props = {
 	defaultValue: string;
@@ -26,16 +27,19 @@ export default function LocaleSwitcherSelect({
 }: Props) {
 	const [isPending, startTransition] = useTransition();
 
-	function onChange(value: string | null) {
-		if (!value) return;
+	function onChange(value: string) {
 		startTransition(() => {
 			setUserLocale(value as Locale);
 		});
 	}
 
 	return (
-		<Select value={defaultValue} onValueChange={onChange}>
+		<Select
+			value={defaultValue}
+			onValueChange={(value) => onChange(value as string)}
+		>
 			<SelectTrigger
+				render={<Button variant="outline" />}
 				aria-label={label}
 				className={clsx(
 					"rounded-sm p-2 transition-colors",
@@ -43,10 +47,12 @@ export default function LocaleSwitcherSelect({
 				)}
 			>
 				<Languages className="h-6 w-6 text-slate-600" />
-				<SelectValue className="sr-only" />
+				<SelectValue>
+					{items.find((item) => item.value === defaultValue)?.label}
+				</SelectValue>
 			</SelectTrigger>
 
-			<SelectContent align="end">
+			<SelectContent>
 				{items.map((item) => (
 					<SelectItem
 						key={item.value}

@@ -4,6 +4,8 @@ model Category {
     slug          String  @unique
     imageUrl      String?
     imagePublicId String?
+    imageWidth    Int?
+    imageHeight   Int?
 
     products Product[]
 

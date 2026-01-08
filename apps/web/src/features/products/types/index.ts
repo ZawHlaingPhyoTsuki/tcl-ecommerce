@@ -1,23 +1,23 @@
-export interface Product {
-	id: string;
-	name: string;
-	slug: string;
-	description: string;
-	price: number;
-	currency: string;
-	stock: number;
-	images: { url: string }[];
-	category: { name: string; slug: string };
-	seller: { shopName: string };
-	createdAt: string;
-	updatedAt: string;
+import type {
+	ICategory,
+	IImage,
+	IPagination,
+	IProduct,
+	ISeller,
+} from "@/types/api";
+
+export interface IProductWithRelations extends IProduct {
+	images: IImage[];
+	category: Pick<ICategory, "id" | "slug" | "name">;
+	seller: Pick<ISeller, "id" | "shopName" | "slug">;
+	rating: {
+		average: number;
+		count: number;
+	};
+	favorited?: boolean;
 }
 
-export interface ProductFilters {
-	search: string;
-	category: string[];
-	minPrice: number;
-	maxPrice: number;
-	inStock: boolean;
-	sortBy: "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest";
+export interface IProductsResponse {
+	products: IProductWithRelations[];
+	pagination: IPagination;
 }

@@ -13,14 +13,16 @@ export default async function Home() {
 	}
 
 	return (
-		<div className="container mx-auto max-w-7xl px-4 py-2">
-			<HeroSection />
+		<div className="container mx-auto max-w-7xl px-4 py-6 md:py-10">
+			<div className="flex flex-col gap-8 md:gap-12">
+				<HeroSection />
 
-			<CategorySection categories={categories.success ? categories.data : []} />
+				<CategorySection categories={categories.data} />
 
-			<SellerSection />
+				<SellerSection sellers={categories.data} />
 
-			<BestSellingStoreSection />
+				<BestSellingStoreSection />
+			</div>
 		</div>
 	);
 }

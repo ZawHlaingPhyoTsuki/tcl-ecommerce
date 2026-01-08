@@ -10,10 +10,9 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 		search,
 		minPrice,
 		maxPrice,
-		categoryId,
-		sellerId,
+		categorySlug,
+		sellerSlug,
 		inStock,
-		currency,
 		sortField,
 		sortOrder,
 	} = query;
@@ -36,13 +35,10 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 		}),
 
 		// Category filter
-		...(categoryId && { categoryId }),
+		...(categorySlug && { category: { slug: categorySlug } }),
 
 		// Seller filter
-		...(sellerId && { sellerId }),
-
-		// Currency filter
-		...(currency && { currency }),
+		...(sellerSlug && { seller: { slug: sellerSlug } }),
 
 		// Search in name or description
 		...(search && {
@@ -71,7 +67,7 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 			include: {
 				images: {
 					take: 1,
-					select: { url: true, publicId: true },
+					select: { url: true, publicId: true, width: true, height: true },
 				},
 				category: {
 					select: {
@@ -87,10 +83,35 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 						slug: true,
 					},
 				},
+				reviews: {
+					select: {
+						id: true,
+						rating: true,
+					},
+				},
 			},
 		}),
 		prisma.product.count({ where }),
 	]);
+
+	// Calculate rating for each product
+	const productsWithRating = products.map((product) => {
+		const totalReviews = product.reviews.length;
+		const sumRatings = product.reviews.reduce(
+			(sum, review) => sum + review.rating,
+			0,
+		);
+		const averageRating = totalReviews > 0 ? sumRatings / totalReviews : 0;
+		const { reviews, ...productWithoutReviews } = product;
+
+		return {
+			...productWithoutReviews,
+			rating: {
+				average: Number(averageRating.toFixed(1)),
+				count: totalReviews,
+			},
+		};
+	});
 
 	// Calculate pagination metadata
 	const pagination = paginationMetadata(page, limit, total);
@@ -99,7 +120,7 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 		success: true,
 		message: "Products retrieved successfully",
 		data: {
-			products,
+			products: productsWithRating,
 			pagination,
 		},
 	};
