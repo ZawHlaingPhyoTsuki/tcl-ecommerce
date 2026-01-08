@@ -20,7 +20,11 @@ import { SearchIcon } from "lucide-react";
 import { debounce } from "nuqs";
 import { useFilters } from "@/app/(site)/products/search-params";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
 
 // const categories = [
@@ -61,21 +65,24 @@ export function ProductFilters({ className }: ProductFiltersProps) {
 		<div className={cn("space-y-6 py-4", className)}>
 			<h3 className="font-semibold text-lg">Filter</h3>
 
-			<Input
-				id="search"
-				placeholder="Search..."
-				leadingIcon={<SearchIcon />}
-				type="search"
-				value={filters.search}
-				onValueChange={(value) => {
-					setFilters(
-						{ search: value },
-						{
-							limitUrlUpdates: value === "" ? undefined : debounce(500),
-						},
-					);
-				}}
-			/>
+			<InputGroup>
+				<InputGroupInput
+					placeholder="Search..."
+					value={filters.search}
+					onChange={(e) =>
+						setFilters(
+							{ search: e.target.value },
+							{
+								limitUrlUpdates:
+									e.target.value === "" ? undefined : debounce(500),
+							},
+						)
+					}
+				/>
+				<InputGroupAddon>
+					<SearchIcon />
+				</InputGroupAddon>
+			</InputGroup>
 
 			{/* 
 			<div className="space-y-2">

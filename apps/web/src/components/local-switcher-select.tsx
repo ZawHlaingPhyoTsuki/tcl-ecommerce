@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/select";
 import type { Locale } from "@/i18n/config";
 import { setUserLocale } from "@/i18n/locale";
-import { Button } from "./ui/button";
 
 type Props = {
 	defaultValue: string;
@@ -39,7 +38,6 @@ export default function LocaleSwitcherSelect({
 			onValueChange={(value) => onChange(value as string)}
 		>
 			<SelectTrigger
-				render={<Button variant="outline" />}
 				aria-label={label}
 				className={clsx(
 					"rounded-sm p-2 transition-colors",
