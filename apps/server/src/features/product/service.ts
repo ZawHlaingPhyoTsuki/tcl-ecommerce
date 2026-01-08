@@ -83,33 +83,43 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 						slug: true,
 					},
 				},
-				reviews: {
-					select: {
-						id: true,
-						rating: true,
-					},
-				},
 			},
 		}),
 		prisma.product.count({ where }),
 	]);
 
-	// Calculate rating for each product
-	const productsWithRating = products.map((product) => {
-		const totalReviews = product.reviews.length;
-		const sumRatings = product.reviews.reduce(
-			(sum, review) => sum + review.rating,
-			0,
-		);
-		const averageRating = totalReviews > 0 ? sumRatings / totalReviews : 0;
-		const { reviews, ...productWithoutReviews } = product;
-
-		return {
-			...productWithoutReviews,
-			rating: {
-				average: Number(averageRating.toFixed(1)),
-				count: totalReviews,
+	// Fetch aggregated ratings for all products in parallel
+	const productIds = products.map((product) => product.id);
+	const ratingsData = await prisma.review.groupBy({
+		by: ["productId"],
+		where: {
+			productId: {
+				in: productIds,
 			},
+		},
+		_avg: {
+			rating: true,
+		},
+		_count: {
+			rating: true,
+		},
+	});
+
+	// Create a ratings lookup map
+	const ratingsMap = new Map(
+		ratingsData.map((rating) => [
+			rating.productId,
+			{
+				average: Number((rating._avg.rating ?? 0).toFixed(1)),
+				count: rating._count.rating,
+			},
+		]),
+	);
+
+	const productsWithRating = products.map((product) => {
+		return {
+			...product,
+			rating: ratingsMap.get(product.id) ?? { average: 0, count: 0 },
 		};
 	});
 
