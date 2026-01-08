@@ -2,7 +2,6 @@ import { useQueryStates } from "nuqs";
 import {
 	createLoader,
 	type Options,
-	parseAsArrayOf,
 	parseAsBoolean,
 	parseAsInteger,
 	parseAsString,
@@ -17,10 +16,9 @@ const searchParams = {
 
 	minPrice: parseAsInteger,
 	maxPrice: parseAsInteger,
-	category: parseAsArrayOf(parseAsString),
-	sellerId: parseAsString,
+	category: parseAsString,
+	seller: parseAsString,
 	inStock: parseAsBoolean,
-	// currency: parseAsStringLiteral(["BAHT", "KYAT"]).withDefault("BAHT"),
 
 	sortBy: parseAsStringLiteral([
 		"price-asc",

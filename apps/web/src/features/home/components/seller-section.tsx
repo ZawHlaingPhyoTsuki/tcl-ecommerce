@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { ICategory } from "../types";
+import type { ICategory } from "@/types/api";
 
 interface SellerSectionProps {
 	sellers: ICategory[];
@@ -19,7 +19,7 @@ export default function SellerSection({ sellers }: SellerSectionProps) {
 					{sellers.map((seller) => (
 						<Link
 							key={seller.id}
-							href={`/products?sellerId=${seller.id}`}
+							href={`/products?sellerSlug=${seller.slug}`}
 							className="group relative flex w-24 shrink-0 flex-col items-center gap-3 md:w-32"
 						>
 							{/* Image Container */}

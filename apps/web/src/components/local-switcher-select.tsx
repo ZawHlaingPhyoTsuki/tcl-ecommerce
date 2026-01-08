@@ -39,7 +39,7 @@ export default function LocaleSwitcherSelect({
 			onValueChange={(value) => onChange(value as string)}
 		>
 			<SelectTrigger
-				render={<Button variant="outline"/>}
+				render={<Button variant="outline" />}
 				aria-label={label}
 				className={clsx(
 					"rounded-sm p-2 transition-colors",

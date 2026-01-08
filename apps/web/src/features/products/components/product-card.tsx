@@ -13,8 +13,9 @@ export function ProductCard({ product }: ProductCardProps) {
 	const isNew = true;
 	const isOnSale = false;
 
-	const imageUrl = product.images[0].url || "/placeholder.png";
-	const ratio = (product.images[0].height / product.images[0].width) * 100;
+	const firstImage = product.images[0];
+	const imageUrl = firstImage?.url || "/placeholder.png";
+	const ratio = firstImage ? (firstImage.height / firstImage.width) * 100 : 100;
 
 	return (
 		<Card className="group overflow-hidden py-0 transition-shadow duration-300 hover:shadow-lg">

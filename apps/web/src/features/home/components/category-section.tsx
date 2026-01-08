@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { ICategory } from "../types";
+import type { ICategory } from "@/types/api";
 
 interface CategorySectionProps {
 	categories: ICategory[];

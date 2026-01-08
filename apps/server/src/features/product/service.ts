@@ -102,12 +102,13 @@ export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 			0,
 		);
 		const averageRating = totalReviews > 0 ? sumRatings / totalReviews : 0;
+		const { reviews, ...productWithoutReviews } = product;
 
 		return {
-			...product,
+			...productWithoutReviews,
 			rating: {
-				average: Number(averageRating.toFixed(1)), // "4.5"
-				count: totalReviews, // 135
+				average: Number(averageRating.toFixed(1)),
+				count: totalReviews,
 			},
 		};
 	});

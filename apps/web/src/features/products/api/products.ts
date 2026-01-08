@@ -13,9 +13,7 @@ export type Filters = {
 	category: string[] | null;
 	sellerId: string | null;
 	inStock: boolean | null;
-	sortBy: NonNullable<
-		"newest" | "price-asc" | "price-desc" | "name-asc" | "name-desc"
-	>;
+	sortBy: "newest" | "price-asc" | "price-desc" | "name-asc" | "name-desc";
 };
 
 export const getProducts = async (
@@ -26,8 +24,11 @@ export const getProducts = async (
 
 	queryParams.append("page", filters.page.toString());
 	queryParams.append("limit", filters.limit.toString());
-	queryParams.append("search", filters.search);
 	queryParams.append("sortBy", filters.sortBy);
+
+	if (filters.search) {
+		queryParams.append("search", filters.search);
+	}
 
 	if (filters.minPrice !== null) {
 		queryParams.append("minPrice", filters.minPrice.toString());

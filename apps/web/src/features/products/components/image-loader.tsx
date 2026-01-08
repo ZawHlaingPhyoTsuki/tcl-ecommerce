@@ -3,9 +3,7 @@ import Image from "next/image";
 interface ProgressiveImageProps {
 	src: string;
 	alt: string;
-	fill: boolean;
-	width?: number;
-	height?: number;
+	fill?: boolean;
 	className?: string;
 	sizes?: string;
 }

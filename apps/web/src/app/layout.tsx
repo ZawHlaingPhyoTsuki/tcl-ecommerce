@@ -28,13 +28,14 @@ export default async function RootLayout({
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
-			<head>
-				<script
-					crossOrigin="anonymous"
-					src="//unpkg.com/react-scan/dist/auto.global.js"
-				/>
-				{/* rest of your scripts go under */}
-			</head>
+			{process.env.NODE_ENV === "development" && (
+				<head>
+					<script
+						crossOrigin="anonymous"
+						src="//unpkg.com/react-scan/dist/auto.global.js"
+					/>
+				</head>
+			)}
 			<body className={`${inter.variable} antialiased`}>
 				<NuqsAdapter>
 					<NextIntlClientProvider>

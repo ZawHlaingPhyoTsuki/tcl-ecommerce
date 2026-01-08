@@ -30,7 +30,11 @@ function BestSellingStoreCard() {
 		<div className="group flex flex-col gap-5 rounded-2xl border bg-card p-5 transition-all duration-300 hover:shadow-lg hover:ring-1 hover:ring-primary/10">
 			{/* Upper */}
 			<div className="flex items-center gap-4">
-				<div className="h-14 w-14 shrink-0 rounded-full bg-muted ring-1 ring-border transition-transform duration-300 group-hover:scale-105" />
+				<div
+					className="h-14 w-14 shrink-0 rounded-full bg-muted ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
+					role="img"
+					aria-label="Store avatar placeholder"
+				/>
 				<div className="min-w-0 flex-1">
 					<div className="truncate font-bold text-foreground text-lg transition-colors group-hover:text-primary">
 						Shop Name
@@ -45,7 +49,11 @@ function BestSellingStoreCard() {
 				{[1, 2, 3].map((i) => (
 					<div key={i} className="flex flex-col items-center gap-2">
 						<div className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted transition-transform duration-300 group-hover:scale-[1.03]">
-							<div className="flex h-full w-full items-center justify-center text-[10px] text-muted-foreground uppercase tracking-widest">
+							<div
+								className="flex h-full w-full items-center justify-center text-[10px] text-muted-foreground uppercase tracking-widest"
+								role="img"
+								aria-label="Product placeholder"
+							>
 								Product
 							</div>
 						</div>

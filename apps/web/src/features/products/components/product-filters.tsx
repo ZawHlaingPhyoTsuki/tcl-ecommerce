@@ -20,8 +20,8 @@ import { SearchIcon } from "lucide-react";
 import { debounce } from "nuqs";
 import { useFilters } from "@/app/(site)/products/search-params";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 // const categories = [
 // 	{ id: "electronics", name: "Electronics" },
@@ -31,13 +31,13 @@ import { Input } from "@/components/ui/input";
 // 	{ id: "sports", name: "Sports" },
 // ];
 
-const sortOptions = [
-	{ label: "Newest First", value: "newest" },
-	{ label: "Price: Low to High", value: "price-asc" },
-	{ label: "Price: High to Low", value: "price-desc" },
-	{ label: "Name: A to Z", value: "name-asc" },
-	{ label: "Name: Z to A", value: "name-desc" },
-];
+// const sortOptions = [
+// 	{ label: "Newest First", value: "newest" },
+// 	{ label: "Price: Low to High", value: "price-asc" },
+// 	{ label: "Price: High to Low", value: "price-desc" },
+// 	{ label: "Name: A to Z", value: "name-asc" },
+// 	{ label: "Name: Z to A", value: "name-desc" },
+// ];
 
 interface ProductFiltersProps {
 	className?: string;

@@ -17,11 +17,9 @@ export default async function Home() {
 			<div className="flex flex-col gap-8 md:gap-12">
 				<HeroSection />
 
-				<CategorySection
-					categories={categories.success ? categories.data : []}
-				/>
+				<CategorySection categories={categories.data} />
 
-				<SellerSection sellers={categories.success ? categories.data : []} />
+				<SellerSection sellers={categories.data} />
 
 				<BestSellingStoreSection />
 			</div>
