@@ -14,7 +14,6 @@ export interface IProductWithRelations extends IProduct {
 		average: number;
 		count: number;
 	};
-	favorited?: boolean;
 }
 
 export interface IProductsResponse {

@@ -85,7 +85,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
 			<CardFooter className="border-none bg-card p-4 pt-0">
 				<Button className="w-full" asChild>
-					<Link href={`/products/${product.id}`}>
+					<Link href={`/products/${product.slug}`}>
 						<Eye className="h-4 w-4" />
 						View
 					</Link>

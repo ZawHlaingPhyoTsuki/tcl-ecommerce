@@ -185,3 +185,66 @@ export const favoriteProductService = async (
 		};
 	});
 };
+
+export const getProductBySlugService = async (slug: string) => {
+	const product = await prisma.product.findUnique({
+		where: { slug },
+		include: {
+			images: {
+				select: {
+					url: true,
+					width: true,
+					height: true,
+				},
+			},
+			category: {
+				select: {
+					id: true,
+					slug: true,
+					name: true,
+				},
+			},
+			seller: {
+				select: {
+					id: true,
+					shopName: true,
+					slug: true,
+					createdAt: true,
+				},
+			},
+		},
+	});
+
+	if (!product) {
+		throw ApiError.notFound("Product not found");
+	}
+
+	const rating = await prisma.review.groupBy({
+		by: ["productId"],
+		where: {
+			productId: product.id,
+		},
+		_avg: {
+			rating: true,
+		},
+		_count: {
+			rating: true,
+		},
+	});
+
+	const ratingData = rating[0];
+
+	return {
+		success: true,
+		message: "Product retrieved successfully",
+		data: {
+			product: {
+				...product,
+				rating: {
+					average: Number((ratingData?._avg.rating ?? 0).toFixed(1)),
+					count: ratingData?._count.rating ?? 0,
+				},
+			},
+		},
+	};
+};

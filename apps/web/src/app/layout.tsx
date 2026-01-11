@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import "../index.css";
 import { getLocale } from "next-intl/server";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Footer } from "@/components/footer";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
 

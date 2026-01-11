@@ -1,3 +1,11 @@
+import { notFound } from "next/navigation";
+import { Footer } from "@/components/footer";
+import { getProduct } from "@/features/product-detail/api/get-product";
+import Detail from "@/features/product-detail/components/detail";
+import ReviewCard from "@/features/product-detail/components/review-cards";
+import ReviewInfo from "@/features/product-detail/components/review-info";
+import Thumbnail from "@/features/product-detail/components/thumbnail";
+
 interface ProductDetailPageProps {
 	params: Promise<{ slug: string }>;
 }
@@ -7,5 +15,35 @@ export default async function ProductDetailPage({
 }: ProductDetailPageProps) {
 	const { slug } = await params;
 
-	return <div>ProductDetailPage {slug}</div>;
+	const data = await getProduct(slug);
+
+	if (!data.success || !data.data) {
+		return notFound();
+	}
+
+	const product = data.data.product;
+
+	return (
+		<>
+			<main className="container mx-auto mb-10 max-w-6xl px-4">
+				{/* Breadcrumb */}
+				<div className="my-4 text-muted-foreground text-sm">
+					Home / Products / {product.name}
+				</div>
+
+				<div className="grid grid-cols-1 space-y-6 lg:grid-cols-9 lg:gap-14 lg:space-y-0">
+					<Thumbnail className="col-span-5" product={product} />
+					<Detail className="col-span-4" product={product} />
+				</div>
+
+				<div className="mt-8 space-y-4">
+					<h3 className="font-medium text-xl">Customer Reviews</h3>
+					<ReviewInfo />
+					<ReviewCard />
+				</div>
+			</main>
+
+			<Footer />
+		</>
+	);
 }
