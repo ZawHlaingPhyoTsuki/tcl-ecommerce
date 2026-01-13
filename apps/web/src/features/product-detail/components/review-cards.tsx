@@ -1,71 +1,89 @@
-import { StarIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-} from "@/components/ui/card";
+"use client";
 
-export default function ReviewCards() {
+import { formatDistanceToNow } from "date-fns";
+import { StarIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import type { IPagination } from "@/types/api";
+import { useGetReviews } from "../queries/use-reviews";
+import type { IReviewWithUser } from "../types";
+
+interface ReviewCardsProps {
+	productId: string;
+	initialData?: {
+		reviews: IReviewWithUser[];
+		pagination: IPagination;
+	};
+}
+
+export default function ReviewCards({
+	productId,
+	initialData,
+}: ReviewCardsProps) {
+	const { data, isLoading, isError } = useGetReviews(productId, initialData);
+
+	if (isLoading) return <div>Loading...</div>;
+
+	if (isError || !data) return <div>Error loading reviews</div>;
+
 	return (
 		<div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-			<ReviewCard />
-			<ReviewCard />
-			<ReviewCard />
-			<ReviewCard />
+			{data.reviews.map((review) => (
+				<ReviewCard key={review.id} review={review} />
+			))}
 		</div>
 	);
 }
 
-function ReviewCard() {
+function renderStars(rating: number) {
+	return Array.from({ length: 5 }).map((_, i) => (
+		<StarIcon
+			key={`star-${i + 1}`}
+			className="h-4 w-4"
+			fill={i < rating ? "currentColor" : "none"}
+		/>
+	));
+}
+
+function ReviewCard({ review }: { review: IReviewWithUser }) {
 	return (
-		<Card className="py-5">
-			<CardHeader>
-				<div className="flex items-start justify-between">
-					{/* Left */}
-					<div className="space-y-3">
-						{/* Stars */}
+		<Card>
+			<CardHeader className="flex flex-row items-center justify-between gap-4">
+				{/* User */}
+				<div className="flex items-center gap-3">
+					<Avatar className="h-9 w-9">
+						<AvatarImage src={review.user?.image || ""} />
+						<AvatarFallback>{review.user?.name?.[0] ?? "U"}</AvatarFallback>
+					</Avatar>
+
+					<div className="flex flex-col">
+						<span className="font-medium text-sm">
+							{review.user?.name || "User"}
+						</span>
+
 						<div className="flex items-center gap-1">
-							<StarIcon className="h-4 w-4" fill="currentColor" />
-							<StarIcon className="h-4 w-4" fill="currentColor" />
-							<StarIcon className="h-4 w-4" fill="currentColor" />
-							<StarIcon className="h-4 w-4" fill="currentColor" />
-							<StarIcon className="h-4 w-4" />
-						</div>
-
-						{/* Review Title */}
-						<h3 className="font-medium">His Favourite Towel!</h3>
-
-						{/* Product Info */}
-						<div className="flex items-center gap-1 text-muted-foreground text-sm">
-							<span>Color: Black</span>
-							<span>•</span>
-							<span>Size: XL</span>
+							{renderStars(review.rating)}
 						</div>
 					</div>
-
-					{/* Right */}
-					<span className="text-muted-foreground text-sm">08 Augest 2024</span>
 				</div>
+
+				{/* Date */}
+				<span className="text-muted-foreground text-xs">
+					{formatDistanceToNow(new Date(review.createdAt), {
+						addSuffix: true,
+					})}
+				</span>
 			</CardHeader>
 
-			<CardContent className="text-muted-foreground">
-				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Natus vel ab
-				dolores, aperiam commodi ratione corporis voluptatum? Deserunt nisi
-				eligendi soluta ducimus beatae exercitationem eos? Dolorum minus porro
-				reiciendis ipsum!
+			<CardContent className="text-muted-foreground text-sm">
+				{review.comment ? (
+					review.comment
+				) : (
+					<span className="text-muted-foreground/70 italic">
+						No comment provided.
+					</span>
+				)}
 			</CardContent>
-
-			<CardFooter className="gap-2 border-none bg-card pt-0 pb-2">
-				<Button size="lg" variant="ghost" className="flex items-center gap-2">
-					<ThumbsUpIcon className="h-6 w-6" />
-					21
-				</Button>
-				<Button size="lg" variant="ghost" className="flex items-center gap-2">
-					<ThumbsDownIcon className="h-6 w-6" />0
-				</Button>
-			</CardFooter>
 		</Card>
 	);
 }

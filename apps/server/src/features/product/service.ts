@@ -1,7 +1,12 @@
 import prisma, { type Prisma } from "@tcl-ecommerce/db";
 import { ApiError } from "@/common/utils/api-error";
 import { paginationMetadata } from "@/common/utils/pagination-metadata";
-import type { GetAllProductsQueryType } from "./dto";
+import { reviewStarCount } from "@/common/utils/review-star-count";
+import type {
+	CreateReviewType,
+	GetAllProductsQueryType,
+	GetAllReviewsQueryType,
+} from "./dto";
 
 export const getAllProductsService = async (query: GetAllProductsQueryType) => {
 	const {
@@ -186,7 +191,57 @@ export const favoriteProductService = async (
 	});
 };
 
-export const getProductBySlugService = async (slug: string) => {
+export const likeProductService = async (productId: string, userId: string) => {
+	return await prisma.$transaction(async (tx) => {
+		// Verify product exists
+		const product = await tx.product.findUnique({
+			where: { id: productId },
+			select: { id: true },
+		});
+
+		if (!product) {
+			throw ApiError.notFound("Product not found");
+		}
+
+		// Check if already liked
+		const existing = await tx.like.findUnique({
+			where: { userId_productId: { userId, productId } },
+		});
+
+		if (existing) {
+			// Unlike
+			await tx.like.delete({
+				where: { id: existing.id },
+			});
+
+			return {
+				success: true,
+				message: "Product unliked successfully",
+				data: {
+					liked: false,
+				},
+			};
+		}
+
+		// Like
+		await tx.like.create({
+			data: { userId, productId },
+		});
+
+		return {
+			success: true,
+			message: "Product liked successfully",
+			data: {
+				liked: true,
+			},
+		};
+	});
+};
+
+export const getProductBySlugService = async (
+	slug: string,
+	userId?: string,
+) => {
 	const product = await prisma.product.findUnique({
 		where: { slug },
 		include: {
@@ -209,7 +264,34 @@ export const getProductBySlugService = async (slug: string) => {
 					id: true,
 					shopName: true,
 					slug: true,
+					city: true,
 					createdAt: true,
+					user: {
+						select: {
+							image: true,
+						},
+					},
+				},
+			},
+			reviews: {
+				select: {
+					rating: true,
+				},
+			},
+			likes: {
+				select: {
+					userId: true,
+				},
+			},
+			favorites: {
+				select: {
+					userId: true,
+				},
+			},
+			_count: {
+				select: {
+					likes: true,
+					favorites: true,
 				},
 			},
 		},
@@ -219,32 +301,134 @@ export const getProductBySlugService = async (slug: string) => {
 		throw ApiError.notFound("Product not found");
 	}
 
-	const rating = await prisma.review.groupBy({
-		by: ["productId"],
-		where: {
-			productId: product.id,
+	const productWithStats = {
+		...product,
+		likes: {
+			count: product._count.likes,
+			userLiked: userId
+				? product.likes.some((l) => l.userId === userId)
+				: false,
 		},
-		_avg: {
-			rating: true,
+		favorites: {
+			count: product._count.favorites,
+			userFavorited: userId
+				? product.favorites.some((f) => f.userId === userId)
+				: false,
 		},
-		_count: {
-			rating: true,
+		testing: product.likes,
+		userId: {
+			data: userId
 		},
-	});
-
-	const ratingData = rating[0];
+	};
 
 	return {
 		success: true,
 		message: "Product retrieved successfully",
 		data: {
-			product: {
-				...product,
-				rating: {
-					average: Number((ratingData?._avg.rating ?? 0).toFixed(1)),
-					count: ratingData?._count.rating ?? 0,
+			product: productWithStats,
+		},
+	};
+};
+
+export const getReviewsService = async (query: GetAllReviewsQueryType) => {
+	const { page, limit, productId } = query;
+
+	// Calculate pagination
+	const skip = (page - 1) * limit;
+
+	const [reviews, total] = await Promise.all([
+		prisma.review.findMany({
+			where: {
+				productId,
+			},
+			skip,
+			take: limit,
+			include: {
+				user: {
+					select: {
+						name: true,
+						image: true,
+					},
 				},
 			},
+		}),
+		prisma.review.count({
+			where: {
+				productId,
+			},
+		}),
+	]);
+
+	// Calculate pagination metadata
+	const pagination = paginationMetadata(page, limit, total);
+
+	return {
+		success: true,
+		message: "Reviews retrieved successfully",
+		data: {
+			reviews,
+			pagination,
+		},
+	};
+};
+
+export const postReviewService = async (
+	data: CreateReviewType,
+	userId: string,
+) => {
+	const exists = await prisma.review.findUnique({
+		where: {
+			userId_productId: {
+				userId,
+				productId: data.productId,
+			},
+		},
+		select: {
+			id: true,
+		},
+	});
+
+	if (exists) {
+		throw new ApiError(409, "You have already reviewed this product");
+	}
+
+	const review = await prisma.review.create({
+		data: {
+			userId,
+			productId: data.productId,
+			rating: data.rating,
+			comment: data.comment,
+		},
+	});
+
+	return {
+		success: true,
+		message: "Review created successfully",
+		data: {
+			review,
+		},
+	};
+};
+
+export const getReviewsStatsService = async (productId: string) => {
+	const reviews = await prisma.review.findMany({
+		where: {
+			productId,
+		},
+		select: {
+			rating: true,
+		},
+	});
+
+	const { total, average, breakdown } = reviewStarCount(reviews);
+
+	return {
+		success: true,
+		message: "Reviews retrieved successfully",
+		data: {
+			total,
+			average,
+			breakdown,
 		},
 	};
 };

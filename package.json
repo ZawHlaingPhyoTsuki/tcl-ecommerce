@@ -30,6 +30,7 @@
 		"db:studio": "turbo -F @tcl-ecommerce/db db:studio",
 		"db:generate": "turbo -F @tcl-ecommerce/db db:generate",
 		"db:migrate": "turbo -F @tcl-ecommerce/db db:migrate",
+		"db:reset": "turbo -F @tcl-ecommerce/db db:reset",
 		"db:start": "turbo -F @tcl-ecommerce/db db:start",
 		"db:watch": "turbo -F @tcl-ecommerce/db db:watch",
 		"db:stop": "turbo -F @tcl-ecommerce/db db:stop",

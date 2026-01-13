@@ -9,6 +9,7 @@ import categoryRouter from "./features/category/router";
 import productRouter from "./features/product/router";
 import sellerRouter from "./features/seller/router";
 import userRouter from "./features/user/router";
+
 // MIDDLEWARES
 import { errorHandler } from "./middlewares";
 

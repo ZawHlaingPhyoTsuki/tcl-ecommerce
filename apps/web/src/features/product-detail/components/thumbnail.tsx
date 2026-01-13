@@ -4,8 +4,8 @@ import {
 	CalendarIcon,
 	MapPinIcon,
 	ShoppingCartIcon,
-	StarIcon,
 	UserPlusIcon,
+	UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -77,7 +77,11 @@ export default function Thumbnail({ product, className }: ThumbnailProps) {
 				<CardHeader className="flex flex-row items-center justify-between gap-4">
 					<div className="flex items-center gap-3">
 						<Avatar className="h-12 w-12">
-							<AvatarImage src="https://github.com/shadcn.png" />
+							<AvatarImage
+								src={
+									product.seller.user.image || "https://github.com/shadcn.png"
+								}
+							/>
 							<AvatarFallback>{product.seller.shopName[0]}</AvatarFallback>
 						</Avatar>
 
@@ -100,13 +104,14 @@ export default function Thumbnail({ product, className }: ThumbnailProps) {
 					</div>
 				</CardHeader>
 
-				<CardContent className="grid grid-cols-3 gap-4 text-muted-foreground text-sm">
+				<CardContent className="flex items-center justify-between gap-4 text-muted-foreground text-sm">
 					<div className="flex items-center gap-2">
-						<StarIcon className="h-4 w-4 text-primary" />
+						<UsersIcon className="h-4 w-4 text-primary" />
 						<p>
-							Store Rating:{" "}
+							Followers:{" "}
 							<span className="font-semibold text-foreground">
-								{product.rating.average.toFixed(1)}
+								{/* {product.reviews.average.toFixed(1)} */}
+								123
 							</span>
 						</p>
 					</div>
@@ -114,8 +119,10 @@ export default function Thumbnail({ product, className }: ThumbnailProps) {
 					<div className="flex items-center gap-2">
 						<MapPinIcon className="h-4 w-4 text-primary" />
 						<p>
-							Location:{" "}
-							<span className="font-semibold text-foreground">Tachileik</span>
+							City:{" "}
+							<span className="font-semibold text-foreground">
+								{product.seller.city || "Unknown"}
+							</span>
 						</p>
 					</div>
 

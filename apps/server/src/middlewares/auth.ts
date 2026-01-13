@@ -28,6 +28,31 @@ export const requireAuth = async (
 	}
 };
 
+export const optionalAuth = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const session = await auth.api.getSession({
+			headers: fromNodeHeaders(req.headers),
+		});
+
+		if (!session) {
+			return next();
+		}
+
+		req.user = session.user;
+
+		next();
+	} catch (error) {
+		console.error("Auth error:", error);
+		return res
+			.status(500)
+			.json({ success: false, message: "Internal server error" });
+	}
+};
+
 export const requireRoles = (roles: string[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.user || !roles.includes(req.user.role)) {

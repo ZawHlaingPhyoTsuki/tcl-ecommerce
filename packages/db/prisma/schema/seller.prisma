@@ -5,6 +5,7 @@ model Seller {
     bio      String?
     phone    String?
     address  String?
+    city     String?
     status   SellerStatus @default(PENDING)
 
     products  Product[]

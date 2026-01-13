@@ -2,8 +2,8 @@ import prisma, {
 	type Image,
 	type Prisma,
 	type Product,
-	Role,
 	SellerStatus,
+	UserRole,
 } from "@tcl-ecommerce/db";
 import { ApiError } from "@/common/utils/api-error";
 import {
@@ -99,7 +99,7 @@ export const approveSellerRegisterService = async (sellerId: string) => {
 
 		await tx.user.update({
 			where: { id: seller.userId },
-			data: { role: Role.SELLER },
+			data: { role: UserRole.SELLER },
 		});
 	});
 
@@ -324,7 +324,7 @@ export const deleteSellerService = async (userId: string) => {
 
 		await tx.user.update({
 			where: { id: userId },
-			data: { role: Role.CUSTOMER },
+			data: { role: UserRole.CUSTOMER },
 		});
 	});
 

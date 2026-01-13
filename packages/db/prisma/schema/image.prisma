@@ -7,4 +7,6 @@ model Image {
 
     product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
     productId String
+
+    @@map("image")
 }

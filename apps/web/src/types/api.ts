@@ -40,6 +40,18 @@ export interface IReview {
 	updatedAt: string;
 }
 
+export interface IUser {
+	id: string;
+	name: string;
+	email: string;
+	emailVerified: boolean;
+	image: string | null;
+	imagePublicId: string | null;
+	role: UserRole;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export interface ISeller {
 	id: string;
 	slug: string;
@@ -48,6 +60,7 @@ export interface ISeller {
 	bio: string | null;
 	phone: string | null;
 	address: string | null;
+	city: string | null;
 	status: SellerStatus;
 	createdAt: string;
 	updatedAt: string;
@@ -71,3 +84,5 @@ export interface IImage {
 }
 
 export type SellerStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export type UserRole = "ADMIN" | "SELLER" | "CUSTOMER";

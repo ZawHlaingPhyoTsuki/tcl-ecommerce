@@ -4,7 +4,6 @@ import { NextIntlClientProvider } from "next-intl";
 import "../index.css";
 import { getLocale } from "next-intl/server";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Footer } from "@/components/footer";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
 
@@ -36,14 +35,14 @@ export default async function RootLayout({
 
 	return (
 		<html lang={locale} className={inter.className} suppressHydrationWarning>
-			{process.env.NODE_ENV === "development" && (
+			{/* {process.env.NODE_ENV === "development" && (
 				<head>
 					<script
 						crossOrigin="anonymous"
 						src="//unpkg.com/react-scan/dist/auto.global.js"
 					/>
 				</head>
-			)}
+			)} */}
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>

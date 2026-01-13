@@ -1,6 +1,7 @@
 "use server";
 
 import { env } from "@tcl-ecommerce/env/web";
+import { cookies } from "next/headers";
 import type { IApiResponse } from "@/types/api";
 import type { IProductsResponse } from "../types";
 
@@ -52,6 +53,11 @@ export const getProducts = async (
 
 	const response = await fetch(
 		`${env.NEXT_PUBLIC_SERVER_URL}/api/products?${queryParams.toString()}`,
+		{
+			headers: {
+				Cookie: (await cookies()).toString(),
+			},
+		},
 	);
 
 	if (!response.ok) {
