@@ -167,11 +167,17 @@ export const favoriteProductService = async (
 				where: { id: existing.id },
 			});
 
+			// Get updated counts
+			const updatedCounts = await tx.favorite.count({
+				where: { productId },
+			});
+
 			return {
 				success: true,
 				message: "Product unfavorited successfully",
 				data: {
 					favorited: false,
+					count: updatedCounts,
 				},
 			};
 		}
@@ -181,11 +187,17 @@ export const favoriteProductService = async (
 			data: { userId, productId },
 		});
 
+		// Get updated counts
+		const updatedCounts = await tx.favorite.count({
+			where: { productId },
+		});
+
 		return {
 			success: true,
 			message: "Product favorited successfully",
 			data: {
 				favorited: true,
+				count: updatedCounts,
 			},
 		};
 	});
@@ -214,11 +226,17 @@ export const likeProductService = async (productId: string, userId: string) => {
 				where: { id: existing.id },
 			});
 
+			// Get updated counts
+			const updatedCounts = await tx.like.count({
+				where: { productId },
+			});
+
 			return {
 				success: true,
 				message: "Product unliked successfully",
 				data: {
 					liked: false,
+					count: updatedCounts,
 				},
 			};
 		}
@@ -228,11 +246,17 @@ export const likeProductService = async (productId: string, userId: string) => {
 			data: { userId, productId },
 		});
 
+		// Get updated counts
+		const updatedCounts = await tx.like.count({
+			where: { productId },
+		});
+
 		return {
 			success: true,
 			message: "Product liked successfully",
 			data: {
 				liked: true,
+				count: updatedCounts,
 			},
 		};
 	});
@@ -314,10 +338,6 @@ export const getProductBySlugService = async (
 			userFavorited: userId
 				? product.favorites.some((f) => f.userId === userId)
 				: false,
-		},
-		testing: product.likes,
-		userId: {
-			data: userId
 		},
 	};
 

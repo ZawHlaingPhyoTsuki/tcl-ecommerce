@@ -36,5 +36,22 @@ export const useToggleLike = (productId: string, slug: string) => {
 			}
 			toast.error(err instanceof Error ? err.message : "Failed to toggle like");
 		},
+		onSuccess: (data) => {
+			// Update with exact server response to ensure consistency
+			queryClient.setQueryData<IProductWithRelations>(
+				["product", slug],
+				(old) => {
+					if (!old) return old;
+
+					return {
+						...old,
+						likes: {
+							count: data.count, // Use exact count from server
+							userLiked: data.liked,
+						},
+					};
+				},
+			);
+		},
 	});
 };

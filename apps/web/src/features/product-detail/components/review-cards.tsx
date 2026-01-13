@@ -4,23 +4,15 @@ import { formatDistanceToNow } from "date-fns";
 import { StarIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import type { IPagination } from "@/types/api";
 import { useGetReviews } from "../queries/use-reviews";
 import type { IReviewWithUser } from "../types";
 
 interface ReviewCardsProps {
 	productId: string;
-	initialData?: {
-		reviews: IReviewWithUser[];
-		pagination: IPagination;
-	};
 }
 
-export default function ReviewCards({
-	productId,
-	initialData,
-}: ReviewCardsProps) {
-	const { data, isLoading, isError } = useGetReviews(productId, initialData);
+export default function ReviewCards({ productId }: ReviewCardsProps) {
+	const { data, isLoading, isError } = useGetReviews(productId);
 
 	if (isLoading) return <div>Loading...</div>;
 

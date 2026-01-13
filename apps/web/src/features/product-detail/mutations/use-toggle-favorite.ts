@@ -38,5 +38,22 @@ export const useToggleFavorite = (productId: string, slug: string) => {
 				err instanceof Error ? err.message : "Failed to toggle favorite",
 			);
 		},
+		onSuccess: (data) => {
+			// Update with exact server response to ensure consistency
+			queryClient.setQueryData<IProductWithRelations>(
+				["product", slug],
+				(old) => {
+					if (!old) return old;
+
+					return {
+						...old,
+						favorites: {
+							count: data.count, // Use exact count from server
+							userFavorited: data.favorited,
+						},
+					};
+				},
+			);
+		},
 	});
 };

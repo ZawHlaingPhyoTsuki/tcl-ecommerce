@@ -16,7 +16,8 @@ export async function toggleFavorite(productId: string) {
 		},
 	);
 
-	const data: IApiResponse<{ favorited: boolean }> = await res.json();
+	const data: IApiResponse<{ favorited: boolean; count: number }> =
+		await res.json();
 
 	if (!res.ok || !data.success) {
 		throw new Error(data.message || "Failed to toggle favorite");

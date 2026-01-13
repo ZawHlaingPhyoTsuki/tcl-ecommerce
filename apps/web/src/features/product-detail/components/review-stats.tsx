@@ -11,17 +11,14 @@ import type { IReviewStats } from "../types";
 
 interface ReviewStatsProps {
 	productId: string;
-	initialData?: IReviewStats;
+	likeCount: number;
 }
 
 export default function ReviewStats({
 	productId,
-	initialData,
+	likeCount,
 }: ReviewStatsProps) {
-	const { data, isLoading, isError } = useGetReviewsStats(
-		productId,
-		initialData,
-	);
+	const { data, isLoading, isError } = useGetReviewsStats(productId);
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -31,7 +28,7 @@ export default function ReviewStats({
 		<Card>
 			<CardContent className="flex flex-col items-center justify-evenly gap-4 md:flex-row">
 				{/* Left Part */}
-				<LeftItem reviewStats={data} />
+				<LeftItem reviewStats={data} likeCount={likeCount} />
 
 				<Separator orientation="vertical" />
 
@@ -44,9 +41,11 @@ export default function ReviewStats({
 
 function LeftItem({
 	reviewStats,
+	likeCount,
 	className,
 }: {
 	reviewStats: IReviewStats;
+	likeCount: number;
 	className?: string;
 }) {
 	const ratingPercentage = (reviewStats.average / 5) * 100;
@@ -87,7 +86,7 @@ function LeftItem({
 				<div className="flex items-center gap-2 text-muted-foreground text-sm">
 					<span>{reviewStats.total} review</span>
 					<span>•</span>
-					<span>{reviewStats.total} likes</span>
+					<span>{likeCount} likes</span>
 				</div>
 			</div>
 		</div>

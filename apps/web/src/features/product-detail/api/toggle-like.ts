@@ -16,7 +16,8 @@ export async function toggleLike(productId: string) {
 		},
 	);
 
-	const data: IApiResponse<{ liked: boolean }> = await res.json();
+	const data: IApiResponse<{ liked: boolean; count: number }> =
+		await res.json();
 
 	if (!res.ok || !data.success) {
 		throw new Error(data.message || "Failed to toggle like");
