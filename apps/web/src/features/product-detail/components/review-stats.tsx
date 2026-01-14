@@ -48,6 +48,17 @@ function LeftItem({
 	likeCount: number;
 	className?: string;
 }) {
+	if (reviewStats.total === 0) {
+		return (
+			<div className={cn("flex w-full items-center gap-4", className)}>
+				<span className="text-muted-foreground">No reviews yet</span>
+				<span className="text-muted-foreground text-sm">
+					• {likeCount} likes
+				</span>
+			</div>
+		);
+	}
+
 	const ratingPercentage = (reviewStats.average / 5) * 100;
 
 	const rating = reviewStats?.average;

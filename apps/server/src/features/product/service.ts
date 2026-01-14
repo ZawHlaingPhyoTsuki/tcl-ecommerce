@@ -302,9 +302,6 @@ export const getProductBySlugService = async (
 				},
 			},
 			likes: {
-				// select: {
-				// 	userId: true,
-				// },
 				where: userId ? { userId } : { userId: "impossible-id" },
 				select: { userId: true },
 				take: 1,

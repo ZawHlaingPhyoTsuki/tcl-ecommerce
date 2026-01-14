@@ -70,7 +70,7 @@ export const GetAllReviewsQuerySchema = ProductIdSchema.extend(
 
 export const PostReviewSchema = ProductIdSchema.extend({
 	rating: z.number().int().min(1).max(5),
-	comment: z.string().optional(),
+	comment: z.string().trim().optional(),
 });
 
 export type GetAllProductsQueryType = z.infer<typeof GetAllProductsQuerySchema>;

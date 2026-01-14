@@ -1,5 +1,3 @@
-"use client";
-
 import {
 	CalendarIcon,
 	MapPinIcon,
@@ -7,15 +5,13 @@ import {
 	UserPlusIcon,
 	UsersIcon,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { IImage } from "@/types/api";
 import type { IProductWithRelations } from "../types";
+import Images from "./images";
 
 interface ThumbnailProps {
 	product: IProductWithRelations;
@@ -24,8 +20,6 @@ interface ThumbnailProps {
 
 export default function Thumbnail({ product, className }: ThumbnailProps) {
 	const images = product.images;
-
-	const [selectedImage, setSelectedImage] = useState<IImage>(images[0]);
 
 	if (!images.length) {
 		return (
@@ -40,47 +34,7 @@ export default function Thumbnail({ product, className }: ThumbnailProps) {
 	return (
 		<div className={cn("flex flex-col gap-6", className)}>
 			{/* Images */}
-			<div className="grid gap-4 lg:grid-cols-6">
-				{/* Thumbnails */}
-				<div className="order-2 grid grid-cols-5 gap-3 lg:order-1 lg:flex lg:flex-col lg:gap-4">
-					{images.map((img) => {
-						const isActive = selectedImage?.url === img.url;
-
-						return (
-							<button
-								key={img.url}
-								type="button"
-								onClick={() => setSelectedImage(img)}
-								className={cn(
-									"relative aspect-square overflow-hidden rounded-md border transition",
-									"hover:ring-2 hover:ring-primary",
-									isActive && "ring-2 ring-primary",
-								)}
-							>
-								<Image
-									src={img.url}
-									alt={product.name}
-									fill
-									className="object-cover"
-								/>
-							</button>
-						);
-					})}
-				</div>
-
-				{/* Main Image */}
-				<div className="order-1 lg:order-2 lg:col-span-5">
-					<div className="relative aspect-square overflow-hidden rounded-xl border bg-muted">
-						<Image
-							src={selectedImage.url}
-							alt={product.name}
-							fill
-							className="object-cover"
-							priority
-						/>
-					</div>
-				</div>
-			</div>
+			<Images images={images} product={product} />
 
 			{/* Seller Card */}
 			<Card>
@@ -119,9 +73,7 @@ export default function Thumbnail({ product, className }: ThumbnailProps) {
 						<UsersIcon className="h-4 w-4 text-primary" />
 						<p>
 							Followers:{" "}
-							<span className="font-semibold text-foreground">
-								123
-							</span>
+							<span className="font-semibold text-foreground">123</span>
 						</p>
 					</div>
 
