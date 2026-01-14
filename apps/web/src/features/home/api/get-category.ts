@@ -1,7 +1,6 @@
 "use server";
 
 import { env } from "@tcl-ecommerce/env/web";
-import { cookies } from "next/headers";
 import type { IApiResponse, ICategory } from "@/types/api";
 
 export const getCategories = async () => {
@@ -9,9 +8,7 @@ export const getCategories = async () => {
 		const response = await fetch(
 			`${env.NEXT_PUBLIC_SERVER_URL}/api/categories`,
 			{
-				headers: {
-					Cookie: (await cookies()).toString(),
-				},
+				cache: "no-store",
 			},
 		);
 
