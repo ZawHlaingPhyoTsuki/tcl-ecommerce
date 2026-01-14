@@ -111,9 +111,17 @@ async function main() {
 
 	function uniqueSlug(name: string) {
 		let slug = faker.helpers.slugify(name).toLowerCase();
-		while (usedSlugs.has(slug)) {
+		let attempts = 0;
+		const maxAttempts = 100;
+		while (usedSlugs.has(slug) && attempts < maxAttempts) {
 			slug = `${slug}-${faker.string.alphanumeric(4).toLowerCase()}`;
+			attempts++;
 		}
+
+		if (attempts === maxAttempts) {
+			throw new Error(`Failed to generate unique slug for "${name}"`);
+		}
+
 		usedSlugs.add(slug);
 		return slug;
 	}

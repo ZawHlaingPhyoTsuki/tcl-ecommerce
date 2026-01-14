@@ -10,16 +10,14 @@ import { useToggleLike } from "../../mutations/use-toggle-like";
 interface LikeButtonProps {
 	productId: string;
 	slug: string;
-	initialLiked: boolean;
+	isLiked: boolean;
 }
 
 export default function LikeButton({
 	productId,
 	slug,
-	initialLiked: isLiked,
+	isLiked,
 }: LikeButtonProps) {
-	console.log({ isLiked });
-
 	const { data: session } = authClient.useSession();
 
 	const mutation = useToggleLike(productId, slug);

@@ -21,7 +21,15 @@ export default function ProductDetailContent({
 		return <Loader />;
 	}
 
-	if (isError || !product) {
+	if (isError) {
+		return (
+			<div className="container mx-auto py-10 text-center">
+				<p>Failed to load product. Please try again.</p>
+			</div>
+		);
+	}
+
+	if (!product) {
 		return notFound();
 	}
 

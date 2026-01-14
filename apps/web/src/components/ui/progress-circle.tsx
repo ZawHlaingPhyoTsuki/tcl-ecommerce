@@ -76,7 +76,7 @@ export const ProgressCircle = ({
 				dominantBaseline="central"
 				className="fill-foreground font-medium text-[6px]"
 			>
-				{(value / 20).toFixed(1)}
+				{(normalizedValue / 20).toFixed(1)}
 			</text>
 		</svg>
 	);

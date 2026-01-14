@@ -21,12 +21,12 @@ export default function ProductActions({ product }: ProductActionsProps) {
 				<FavoriteButton
 					productId={product.id}
 					slug={product.slug}
-					initialFavorite={product.favorites.userFavorited}
+					isFavorited={product.favorites.userFavorited}
 				/>
 				<LikeButton
 					productId={product.id}
 					slug={product.slug}
-					initialLiked={product.likes.userLiked}
+					isLiked={product.likes.userLiked}
 				/>
 			</div>
 

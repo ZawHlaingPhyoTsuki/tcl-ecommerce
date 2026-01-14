@@ -7,85 +7,85 @@ import {
 	YoutubeIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
+const company = [
+	{
+		title: "About Us",
+		href: "#",
+	},
+	{
+		title: "Careers",
+		href: "#",
+	},
+	{
+		title: "Brand assets",
+		href: "#",
+	},
+	{
+		title: "Privacy Policy",
+		href: "#",
+	},
+	{
+		title: "Terms of Service",
+		href: "#",
+	},
+];
+
+const resources = [
+	{
+		title: "Blog",
+		href: "#",
+	},
+	{
+		title: "Help Center",
+		href: "#",
+	},
+	{
+		title: "Contact Support",
+		href: "#",
+	},
+	{
+		title: "Community",
+		href: "#",
+	},
+	{
+		title: "Security",
+		href: "#",
+	},
+];
+
+const socialLinks = [
+	{
+		icon: FacebookIcon,
+		link: "#",
+	},
+	{
+		icon: GithubIcon,
+		link: "#",
+	},
+	{
+		icon: InstagramIcon,
+		link: "#",
+	},
+	{
+		icon: LinkedinIcon,
+		link: "#",
+	},
+	{
+		icon: TwitterIcon,
+		link: "#",
+	},
+	{
+		icon: YoutubeIcon,
+		link: "#",
+	},
+];
+
 export function Footer() {
-	const company = [
-		{
-			title: "About Us",
-			href: "#",
-		},
-		{
-			title: "Careers",
-			href: "#",
-		},
-		{
-			title: "Brand assets",
-			href: "#",
-		},
-		{
-			title: "Privacy Policy",
-			href: "#",
-		},
-		{
-			title: "Terms of Service",
-			href: "#",
-		},
-	];
-
-	const resources = [
-		{
-			title: "Blog",
-			href: "#",
-		},
-		{
-			title: "Help Center",
-			href: "#",
-		},
-		{
-			title: "Contact Support",
-			href: "#",
-		},
-		{
-			title: "Community",
-			href: "#",
-		},
-		{
-			title: "Security",
-			href: "#",
-		},
-	];
-
-	const socialLinks = [
-		{
-			icon: FacebookIcon,
-			link: "#",
-		},
-		{
-			icon: GithubIcon,
-			link: "#",
-		},
-		{
-			icon: InstagramIcon,
-			link: "#",
-		},
-		{
-			icon: LinkedinIcon,
-			link: "#",
-		},
-		{
-			icon: TwitterIcon,
-			link: "#",
-		},
-		{
-			icon: YoutubeIcon,
-			link: "#",
-		},
-	];
 	return (
 		<footer className="relative bg-card">
-			<div className={cn("mx-auto max-w-5xl lg:border-x", "")}>
+			<div className="mx-auto max-w-5xl lg:border-x">
 				<div className="absolute inset-x-0 h-px w-full bg-border" />
 				<div className="grid max-w-5xl grid-cols-6 gap-6 p-4">
 					<div className="col-span-6 flex flex-col gap-4 pt-5 md:col-span-4">
@@ -101,6 +101,7 @@ export function Footer() {
 									key={`social-${item.link}-${index}`}
 									size="icon-sm"
 									variant="outline"
+									asChild
 								>
 									<a href={item.link} target="_blank">
 										<item.icon className="size-3.5" />

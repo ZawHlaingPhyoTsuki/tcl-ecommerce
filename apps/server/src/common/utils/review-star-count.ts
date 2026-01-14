@@ -10,7 +10,10 @@ export const reviewStarCount = (reviews: { rating: number }[]) => {
 	};
 
 	for (const r of reviews) {
-		starCount[r.rating as 1 | 2 | 3 | 4 | 5]++;
+		const rating = r.rating;
+		if (rating >= 1 && rating <= 5 && Number.isInteger(rating)) {
+			starCount[rating as 1 | 2 | 3 | 4 | 5]++;
+		}
 	}
 
 	const average =

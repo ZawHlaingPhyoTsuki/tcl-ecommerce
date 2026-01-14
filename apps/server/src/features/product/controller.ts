@@ -166,7 +166,7 @@ export const postReviewController = async (
 
 		const result = await postReviewService(parsed.data, req.user.id);
 
-		return res.status(200).json(result);
+		return res.status(201).json(result);
 	} catch (error) {
 		next(error);
 	}

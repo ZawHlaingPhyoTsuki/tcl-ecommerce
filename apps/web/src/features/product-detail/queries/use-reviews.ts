@@ -5,6 +5,7 @@ export const getReviewsQueryOptions = (productId: string) =>
 	queryOptions({
 		queryKey: ["reviews", productId],
 		queryFn: () => getReviews(productId),
+		enabled: !!productId,
 	});
 
 export const useGetReviews = (productId: string) => {

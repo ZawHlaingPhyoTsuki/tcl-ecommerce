@@ -10,13 +10,13 @@ import { useToggleFavorite } from "../../mutations/use-toggle-favorite";
 interface FavoriteButtonProps {
 	productId: string;
 	slug: string;
-	initialFavorite: boolean;
+	isFavorited: boolean;
 }
 
 export default function FavoriteButton({
 	productId,
 	slug,
-	initialFavorite: isFavorited,
+	isFavorited,
 }: FavoriteButtonProps) {
 	const { data: session } = authClient.useSession();
 

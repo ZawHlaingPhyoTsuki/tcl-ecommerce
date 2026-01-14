@@ -79,12 +79,14 @@ function LeftItem({
 
 				{/* Text */}
 				<span className="font-medium">
-					{ratingPercentage.toFixed(1)} % of customers are satisfied
+					Lorem ipsum dolor sit amet consectetur adipisicing elit.
 				</span>
 
 				{/* Ratings */}
 				<div className="flex items-center gap-2 text-muted-foreground text-sm">
-					<span>{reviewStats.total} review</span>
+					<span>
+						{reviewStats.total} {reviewStats.total === 1 ? "review" : "reviews"}
+					</span>
 					<span>•</span>
 					<span>{likeCount} likes</span>
 				</div>

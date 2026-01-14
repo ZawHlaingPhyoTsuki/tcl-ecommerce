@@ -25,7 +25,8 @@ export const getCategories = async () => {
 		console.error("Error fetching categories:", error);
 		return {
 			success: false,
-			message: "Failed to fetch categories",
+			message:
+				error instanceof Error ? error.message : "Failed to fetch categories",
 			data: [],
 		};
 	}

@@ -69,7 +69,7 @@ export const GetAllReviewsQuerySchema = ProductIdSchema.extend(
 );
 
 export const PostReviewSchema = ProductIdSchema.extend({
-	rating: z.number().min(1).max(5),
+	rating: z.number().int().min(1).max(5),
 	comment: z.string().optional(),
 });
 

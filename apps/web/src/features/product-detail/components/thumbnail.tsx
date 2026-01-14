@@ -27,6 +27,16 @@ export default function Thumbnail({ product, className }: ThumbnailProps) {
 
 	const [selectedImage, setSelectedImage] = useState<IImage>(images[0]);
 
+	if (!images.length) {
+		return (
+			<div className={cn("flex flex-col gap-6", className)}>
+				<div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border bg-muted">
+					<p className="text-muted-foreground">No images available</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className={cn("flex flex-col gap-6", className)}>
 			{/* Images */}
@@ -110,7 +120,6 @@ export default function Thumbnail({ product, className }: ThumbnailProps) {
 						<p>
 							Followers:{" "}
 							<span className="font-semibold text-foreground">
-								{/* {product.reviews.average.toFixed(1)} */}
 								123
 							</span>
 						</p>

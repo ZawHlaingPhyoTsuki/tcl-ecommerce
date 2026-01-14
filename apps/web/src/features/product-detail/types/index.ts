@@ -40,7 +40,7 @@ export interface IReviewWithUser extends IReview {
 
 export const CreateReviewSchema = z.object({
 	rating: z.number().min(1, "Please select a rating").max(5),
-	comment: z.string().optional(),
+	comment: z.string().trim().optional(),
 });
 
 export type CreateReviewType = z.infer<typeof CreateReviewSchema>;

@@ -5,6 +5,7 @@ export const getProductQueryOptions = (slug: string) =>
 	queryOptions({
 		queryKey: ["product", slug],
 		queryFn: () => getProduct(slug),
+		enabled: !!slug,
 	});
 
 export const useGetProduct = (slug: string) => {

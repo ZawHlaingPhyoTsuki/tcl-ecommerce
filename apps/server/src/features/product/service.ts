@@ -1,7 +1,6 @@
 import prisma, { type Prisma } from "@tcl-ecommerce/db";
 import { ApiError } from "@/common/utils/api-error";
 import { paginationMetadata } from "@/common/utils/pagination-metadata";
-import { reviewStarCount } from "@/common/utils/review-star-count";
 import type {
 	CreateReviewType,
 	GetAllProductsQueryType,
@@ -303,14 +302,17 @@ export const getProductBySlugService = async (
 				},
 			},
 			likes: {
-				select: {
-					userId: true,
-				},
+				// select: {
+				// 	userId: true,
+				// },
+				where: userId ? { userId } : { userId: "impossible-id" },
+				select: { userId: true },
+				take: 1,
 			},
 			favorites: {
-				select: {
-					userId: true,
-				},
+				where: userId ? { userId } : { userId: "impossible-id" },
+				select: { userId: true },
+				take: 1,
 			},
 			_count: {
 				select: {
@@ -329,15 +331,11 @@ export const getProductBySlugService = async (
 		...product,
 		likes: {
 			count: product._count.likes,
-			userLiked: userId
-				? product.likes.some((l) => l.userId === userId)
-				: false,
+			userLiked: product.likes.length > 0,
 		},
 		favorites: {
 			count: product._count.favorites,
-			userFavorited: userId
-				? product.favorites.some((f) => f.userId === userId)
-				: false,
+			userFavorited: product.favorites.length > 0,
 		},
 	};
 
@@ -361,6 +359,7 @@ export const getReviewsService = async (query: GetAllReviewsQueryType) => {
 			where: {
 				productId,
 			},
+			orderBy: { createdAt: "desc" },
 			skip,
 			take: limit,
 			include: {
@@ -396,6 +395,16 @@ export const postReviewService = async (
 	data: CreateReviewType,
 	userId: string,
 ) => {
+	// Verify product exists
+	const product = await prisma.product.findUnique({
+		where: { id: data.productId },
+		select: { id: true },
+	});
+
+	if (!product) {
+		throw ApiError.notFound("Product not found");
+	}
+
 	const exists = await prisma.review.findUnique({
 		where: {
 			userId_productId: {
@@ -409,7 +418,7 @@ export const postReviewService = async (
 	});
 
 	if (exists) {
-		throw new ApiError(409, "You have already reviewed this product");
+		throw ApiError.conflict("You have already reviewed this product");
 	}
 
 	const review = await prisma.review.create({
@@ -431,17 +440,27 @@ export const postReviewService = async (
 };
 
 export const getReviewsStatsService = async (productId: string) => {
-	const reviews = await prisma.review.findMany({
-		where: {
-			productId,
-		},
-		select: {
-			rating: true,
-		},
-	});
-
-	const { total, average, breakdown } = reviewStarCount(reviews);
-
+	const [aggregates, starCounts] = await Promise.all([
+		prisma.review.aggregate({
+			where: { productId },
+			_count: { rating: true },
+			_avg: { rating: true },
+		}),
+		prisma.review.groupBy({
+			by: ["rating"],
+			where: { productId },
+			_count: { rating: true },
+		}),
+	]);
+	const total = aggregates._count.rating;
+	const average = Number((aggregates._avg.rating ?? 0).toFixed(1));
+	const starMap = new Map(starCounts.map((s) => [s.rating, s._count.rating]));
+	const breakdown = [5, 4, 3, 2, 1].map((star) => ({
+		star,
+		count: starMap.get(star) ?? 0,
+		percentage:
+			total === 0 ? 0 : Math.round(((starMap.get(star) ?? 0) / total) * 100),
+	}));
 	return {
 		success: true,
 		message: "Reviews retrieved successfully",

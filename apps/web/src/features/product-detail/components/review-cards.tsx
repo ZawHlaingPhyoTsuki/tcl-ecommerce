@@ -18,6 +18,14 @@ export default function ReviewCards({ productId }: ReviewCardsProps) {
 
 	if (isError || !data) return <div>Error loading reviews</div>;
 
+	if (data.reviews.length === 0) {
+		return (
+			<div className="py-8 text-center text-muted-foreground">
+				No reviews yet. Be the first to review this product!
+			</div>
+		);
+	}
+
 	return (
 		<div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
 			{data.reviews.map((review) => (

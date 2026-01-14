@@ -8,15 +8,13 @@ interface DetailProps {
 	className?: string;
 }
 
-const currencyUtil = (currency: string) => {
-	return (
-		currency[0].toLocaleUpperCase() + currency.slice(1).toLocaleLowerCase()
-	);
+const LOW_STOCK_THRESHOLD = 10;
+
+const capitalizeWord = (word: string) => {
+	return word[0].toLocaleUpperCase() + word.slice(1).toLocaleLowerCase();
 };
 
 export default function Detail({ product, className }: DetailProps) {
-	console.log({ product });
-
 	return (
 		<div className={cn("flex h-full flex-col space-y-5", className)}>
 			{/* Title and Status Badges */}
@@ -28,10 +26,12 @@ export default function Detail({ product, className }: DetailProps) {
 				{/* Badge Group */}
 				<div className="flex flex-wrap items-center gap-2">
 					<Badge
-						variant={product.stock > 10 ? "default" : "destructive"}
+						variant={
+							product.stock > LOW_STOCK_THRESHOLD ? "default" : "destructive"
+						}
 						className="px-3 py-1 text-sm"
 					>
-						{product.stock > 10
+						{product.stock > LOW_STOCK_THRESHOLD
 							? `${product.stock} in stock`
 							: `Only ${product.stock} left`}
 					</Badge>
@@ -43,7 +43,7 @@ export default function Detail({ product, className }: DetailProps) {
 
 			{/* Price Section */}
 			<span className="font-bold text-3xl text-primary sm:text-4xl">
-				{currencyUtil(product.currency)} {product.price.toLocaleString()}
+				{capitalizeWord(product.currency)} {product.price.toLocaleString()}
 			</span>
 
 			{/* Description */}

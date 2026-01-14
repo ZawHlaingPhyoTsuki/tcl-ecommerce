@@ -16,7 +16,7 @@ export async function getReviews(productId: string) {
 	);
 
 	if (!res.ok) {
-		throw new Error("Failed to fetch product");
+		throw new Error("Failed to fetch reviews");
 	}
 
 	const data: IApiResponse<{
@@ -25,7 +25,7 @@ export async function getReviews(productId: string) {
 	}> = await res.json();
 
 	if (!data.success || !data.data) {
-		throw new Error(data.message || "Failed to fetch review stats");
+		throw new Error(data.message || "Failed to fetch reviews");
 	}
 
 	return data.data;
