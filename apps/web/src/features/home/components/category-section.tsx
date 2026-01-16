@@ -1,19 +1,28 @@
+"use client"
+
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import type { ICategory } from "@/types/api";
+import { useGetCategories } from "../queries/use-categories";
 
-interface CategorySectionProps {
-	categories: ICategory[];
-}
+export default function CategorySection() {
 
-export default function CategorySection({ categories }: CategorySectionProps) {
+	const { data, isLoading } = useGetCategories();
+
+	if (isLoading) {
+		return <div>Loading categories...</div>;
+	}
+
+	if (!data?.success) {
+		return <div>Failed to load categories</div>;
+	}
+
 	return (
 		<div className="mt-4">
 			<h2 className="mb-4 font-bold text-2xl tracking-tight">Categories</h2>
 			<ScrollArea className="max-w-full rounded-2xl border bg-card">
 				<div className="flex w-max gap-4 p-4 md:gap-6 md:p-6">
-					{categories.map((category) => (
+					{data.data.map((category) => (
 						<Link
 							key={category.id}
 							href={`/products?category=${category.slug}`}

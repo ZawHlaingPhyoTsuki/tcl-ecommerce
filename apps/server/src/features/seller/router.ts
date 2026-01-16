@@ -1,4 +1,4 @@
-import { Role } from "@tcl-ecommerce/db";
+import { UserRole } from "@tcl-ecommerce/db";
 import { Router } from "express";
 import { requireAuth, requireRoles } from "@/middlewares";
 import { uploadProductImages } from "@/middlewares/upload";
@@ -18,13 +18,13 @@ const router: Router = Router();
 router.get(
 	"/admin/sellers",
 	requireAuth,
-	requireRoles([Role.ADMIN]),
+	requireRoles([UserRole.ADMIN]),
 	getAllSellerController,
 );
 router.post(
 	"/admin/sellers/approve/:sellerId",
 	requireAuth,
-	requireRoles([Role.ADMIN]),
+	requireRoles([UserRole.ADMIN]),
 	approveSellerRegisterController,
 );
 
@@ -33,7 +33,7 @@ router.post(
 router.get(
 	"/sellers/products",
 	requireAuth,
-	requireRoles([Role.SELLER]),
+	requireRoles([UserRole.SELLER]),
 	listSellerProductsController,
 );
 
@@ -44,7 +44,7 @@ router.post("/sellers/register", requireAuth, registerSellerController);
 router.post(
 	"/sellers/products",
 	requireAuth,
-	requireRoles([Role.SELLER]),
+	requireRoles([UserRole.SELLER]),
 	uploadProductImages.array("images", 5),
 	createSellerProductsController,
 );
@@ -53,7 +53,7 @@ router.post(
 router.get(
 	"/sellers/profile",
 	requireAuth,
-	requireRoles([Role.SELLER]),
+	requireRoles([UserRole.SELLER]),
 	sellerProfileController,
 );
 
@@ -61,7 +61,7 @@ router.get(
 router.delete(
 	"/sellers",
 	requireAuth,
-	requireRoles([Role.SELLER]),
+	requireRoles([UserRole.SELLER]),
 	deleteSellerController,
 );
 

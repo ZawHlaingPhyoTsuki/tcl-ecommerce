@@ -14,9 +14,12 @@ model Product {
     sellerId   String
     favorites  Favorite[]
     reviews    Review[]
+    likes      Like[]
 
     archivedAt DateTime?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@map("product")
 }

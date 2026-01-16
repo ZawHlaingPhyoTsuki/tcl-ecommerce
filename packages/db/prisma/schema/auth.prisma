@@ -11,16 +11,17 @@ model User {
 
   // app fields
   imagePublicId String?
-  role          Role       @default(CUSTOMER)
+  role          UserRole       @default(CUSTOMER)
   seller        Seller?
   favorites     Favorite[]
   reviews       Review[]
+  likes         Like[]
 
   @@unique([email])
   @@map("user")
 }
 
-enum Role {
+enum UserRole {
   ADMIN
   SELLER
   CUSTOMER

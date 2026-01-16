@@ -1,19 +1,27 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import type { ICategory } from "@/types/api";
+import { useGetCategories } from "../queries/use-categories";
 
-interface SellerSectionProps {
-	sellers: ICategory[];
-}
+export default function SellerSection() {
+const { data, isLoading } = useGetCategories();
 
-export default function SellerSection({ sellers }: SellerSectionProps) {
+	if (isLoading) {
+		return <div>Loading sellers...</div>;
+	}
+
+	if (!data?.success) {
+	return <div>Failed to load sellers</div>;
+	}
+
 	return (
 		<div className="mt-4">
 			<h2 className="mb-4 font-bold text-2xl tracking-tight">Sellers</h2>
 			<ScrollArea className="max-w-full rounded-2xl border bg-card">
 				<div className="flex w-max gap-4 p-4 md:gap-6 md:p-6">
-					{sellers.map((seller) => (
+					{data.data.map((seller) => (
 						<Link
 							key={seller.id}
 							href={`/products?sellerSlug=${seller.slug}`}

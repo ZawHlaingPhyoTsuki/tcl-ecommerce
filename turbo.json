@@ -29,6 +29,10 @@
 			"cache": false,
 			"persistent": true
 		},
+		"db:reset": {
+			"cache": false,
+			"persistent": false
+		},
 		"db:generate": {
 			"cache": false,
 			"persistent": true

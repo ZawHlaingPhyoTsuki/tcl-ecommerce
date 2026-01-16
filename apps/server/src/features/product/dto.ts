@@ -1,5 +1,5 @@
 import z from "zod";
-import { PaginationSchema } from "@/common/dto";
+import { PaginationSchema, ProductIdSchema } from "@/common/dto";
 
 export const GetAllProductsQuerySchema = PaginationSchema.extend({
 	// Search
@@ -64,4 +64,15 @@ export const GetAllProductsQuerySchema = PaginationSchema.extend({
 		};
 	});
 
+export const GetAllReviewsQuerySchema = ProductIdSchema.extend(
+	PaginationSchema.shape,
+);
+
+export const PostReviewSchema = ProductIdSchema.extend({
+	rating: z.number().int().min(1).max(5),
+	comment: z.string().trim().optional(),
+});
+
 export type GetAllProductsQueryType = z.infer<typeof GetAllProductsQuerySchema>;
+export type GetAllReviewsQueryType = z.infer<typeof GetAllReviewsQuerySchema>;
+export type CreateReviewType = z.infer<typeof PostReviewSchema>;

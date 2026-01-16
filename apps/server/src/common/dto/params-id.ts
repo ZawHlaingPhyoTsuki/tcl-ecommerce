@@ -12,6 +12,10 @@ export const ProductIdSchema = z.object({
 	productId: z.uuidv4({ error: "Invalid product ID format" }),
 });
 
+export const ProductSlugSchema = z.object({
+	slug: z.string({ error: "Invalid product slug format" }),
+});
+
 export const CategoryIdSchema = z.object({
 	categoryId: z.uuidv4({ error: "Invalid category ID format" }),
 });
@@ -19,4 +23,5 @@ export const CategoryIdSchema = z.object({
 export type UserIdType = z.infer<typeof UserIdSchema>;
 export type SellerIdType = z.infer<typeof SellerIdSchema>;
 export type ProductIdType = z.infer<typeof ProductIdSchema>;
+export type ProductSlugType = z.infer<typeof ProductSlugSchema>;
 export type CategoryIdType = z.infer<typeof CategoryIdSchema>;

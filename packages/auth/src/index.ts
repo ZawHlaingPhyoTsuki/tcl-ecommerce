@@ -1,5 +1,5 @@
 import { expo } from "@better-auth/expo";
-import prisma, { Role } from "@tcl-ecommerce/db";
+import prisma, { UserRole } from "@tcl-ecommerce/db";
 import { env } from "@tcl-ecommerce/env/server";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -16,7 +16,7 @@ export const auth = betterAuth({
 		additionalFields: {
 			role: {
 				type: "string",
-				default: Role.CUSTOMER,
+				default: UserRole.CUSTOMER,
 			},
 		},
 	},

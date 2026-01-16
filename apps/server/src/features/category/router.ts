@@ -1,4 +1,4 @@
-import { Role } from "@tcl-ecommerce/db";
+import { UserRole } from "@tcl-ecommerce/db";
 import { Router } from "express";
 import { requireAuth, requireRoles } from "@/middlewares";
 import { uploadCategoryImage } from "@/middlewares/upload";
@@ -15,7 +15,7 @@ router.get("/", getAllCategoryController);
 router.post(
 	"/",
 	requireAuth,
-	requireRoles([Role.ADMIN]),
+	requireRoles([UserRole.ADMIN]),
 	uploadCategoryImage.single("image"),
 	createCategoryController,
 );

@@ -35,14 +35,14 @@ export default async function RootLayout({
 
 	return (
 		<html lang={locale} className={inter.className} suppressHydrationWarning>
-			{process.env.NODE_ENV === "development" && (
+			{/* {process.env.NODE_ENV === "development" && (
 				<head>
 					<script
 						crossOrigin="anonymous"
 						src="//unpkg.com/react-scan/dist/auto.global.js"
 					/>
 				</head>
-			)}
+			)} */}
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>

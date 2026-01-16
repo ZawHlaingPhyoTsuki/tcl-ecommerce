@@ -1,5 +1,6 @@
 import Link from "next/link";
 import LocaleSwitcher from "./local-switcher";
+import { ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
 
 export default function Header() {
@@ -21,7 +22,7 @@ export default function Header() {
 					})}
 				</nav>
 				<div className="flex items-center gap-2">
-					{/* <span>Translation</span> */}
+					<ModeToggle />
 					<LocaleSwitcher />
 					<UserMenu />
 				</div>

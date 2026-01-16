@@ -1,3 +1,5 @@
+import ProductDetailContent from "@/features/product-detail/components/product-detail-content";
+
 interface ProductDetailPageProps {
 	params: Promise<{ slug: string }>;
 }
@@ -7,5 +9,5 @@ export default async function ProductDetailPage({
 }: ProductDetailPageProps) {
 	const { slug } = await params;
 
-	return <div>ProductDetailPage {slug}</div>;
+	return <ProductDetailContent slug={slug} />;
 }
