@@ -7,7 +7,11 @@ import { useGetCategories } from "../queries/use-categories";
 
 export default function CategorySection() {
 
-	const { data } = useGetCategories();
+	const { data, isLoading } = useGetCategories();
+
+	if (isLoading) {
+		return <div>Loading categories...</div>;
+	}
 
 	if (!data?.success) {
 		return <div>Failed to load categories</div>;

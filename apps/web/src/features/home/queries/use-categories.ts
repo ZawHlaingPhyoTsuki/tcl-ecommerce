@@ -4,7 +4,7 @@ import { getCategories } from "../api/get-category";
 export const getCategoriesQueryOptions = () =>
 	queryOptions({
 		queryKey: ["categories"],
-		queryFn: () => getCategories(),
+		queryFn: getCategories,
 	});
 
 export const useGetCategories = () => {

@@ -6,10 +6,14 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useGetCategories } from "../queries/use-categories";
 
 export default function SellerSection() {
-	const { data } = useGetCategories();
+const { data, isLoading } = useGetCategories();
+
+	if (isLoading) {
+		return <div>Loading sellers...</div>;
+	}
 
 	if (!data?.success) {
-		return <div>Failed to load categories</div>;
+	return <div>Failed to load sellers</div>;
 	}
 
 	return (
